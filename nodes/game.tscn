@@ -1,0 +1,78 @@
+[gd_scene load_steps=9 format=3 uid="uid://c4au0y5j1eqey"]
+
+[ext_resource type="Script" path="res://scripts/GameNode.cs" id="1_0g2kb"]
+[ext_resource type="Texture2D" uid="uid://cvvb57rvyfctk" path="res://images/res/Enlight.png" id="2_iu0sa"]
+[ext_resource type="Texture2D" uid="uid://cid6tb0bljjf7" path="res://images/res/Light.png" id="3_pcewm"]
+[ext_resource type="Texture2D" uid="uid://c588ddinp4sqt" path="res://images/res/Shadow.png" id="4_bpqw1"]
+[ext_resource type="Texture2D" uid="uid://bwby74lsyn1mu" path="res://images/res/Stone.png" id="5_s8uyp"]
+[ext_resource type="Texture2D" uid="uid://cck0gen1vlaab" path="res://images/res/Heart.png" id="6_gn82d"]
+[ext_resource type="Texture2D" uid="uid://b64t8vupxv7o1" path="res://images/res/Soul.png" id="7_26sng"]
+[ext_resource type="Texture2D" uid="uid://crsj2yv1w8kw6" path="res://images/res/Any.png" id="7_boj03"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_0g2kb")
+ResImage_Enlight = ExtResource("2_iu0sa")
+ResImage_Light = ExtResource("3_pcewm")
+ResImage_Shadow = ExtResource("4_bpqw1")
+ResImage_Stone = ExtResource("5_s8uyp")
+ResImage_Heart = ExtResource("6_gn82d")
+ResImage_Any = ExtResource("7_boj03")
+ResImage_Soul = ExtResource("7_26sng")
+
+[node name="Board" type="Node2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Board"]
+visible = false
+
+[node name="Window" type="Control" parent="Board/CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Board/CanvasLayer/Window"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InfoBar" type="HBoxContainer" parent="Board/CanvasLayer/Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Board/CanvasLayer/Window/VBoxContainer/InfoBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GoalInfo" type="Label" parent="Board/CanvasLayer/Window/VBoxContainer/InfoBar/VBoxContainer"]
+layout_mode = 2
+text = "要求：在第6回合开始前魂质达到10点"
+
+[node name="TurnInfo" type="Label" parent="Board/CanvasLayer/Window/VBoxContainer/InfoBar/VBoxContainer"]
+layout_mode = 2
+text = "当前是第1回合"
+
+[node name="GameBoard" type="Control" parent="Board/CanvasLayer/Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="RelicBar" type="HBoxContainer" parent="Board/CanvasLayer/Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="HandAnchor" type="Node2D" parent="Board"]
+unique_name_in_owner = true
+position = Vector2(580, 575)
+
+[node name="ResourceAnchor" type="Node2D" parent="Board"]
+unique_name_in_owner = true
+position = Vector2(17, 493)
+
+[node name="ColorRect" type="ColorRect" parent="Board/ResourceAnchor"]
+offset_right = 102.0
+offset_bottom = 142.0
+color = Color(0.262745, 0.262745, 0.262745, 1)
+
+[node name="BoardAnchor" type="Node2D" parent="Board"]
+position = Vector2(578, 220)
