@@ -7,42 +7,104 @@ using System.Threading.Tasks;
 public static class HandRenderManager
 {
     private static Node2D HandAnchor;
+    private static HandState handState = HandState.Play;
 
     public static void Init()
     {
         HandAnchor = GameNode.Instance.GetNode<Node2D>("%HandAnchor");
     }
 
+
+    public static async Task SetHandState(HandState state)
+    {
+        handState = state;
+        await RefreshHand();
+    }
+
     public static async Task RefreshHand()
     {
-
-        Vector2 position = HandAnchor.Position;
-        var handPile = Utils.GetPlayer().handPile;
-        int len = handPile.Count;
         int index = -1;
-
-        float cardWidth = 140;
-        float cardHeight = 196;
-        float gap = cardWidth * 0.1f;
-        float MOVE_INTERVAL = 0.13f;
-
-        float centerX = position.X;
-        float centerY = position.Y;
-        float totalX = len * cardWidth + (len - 1) * gap;
-        float startX = position.X - totalX / 2f + cardWidth / 2f;
+        List<Card> handPile = Utils.GetPlayer().handPile;
+        int handSize = handPile.Count;
         foreach (Card card in handPile)
         {
             index++;
-            CardNode node = CardRenderManager.Show(card);
-
-            float curX = startX + index * (cardWidth + gap);
-            float curY = centerY;
-            Tween tween = node.CreateTween();
-            tween.Parallel().TweenProperty(node, "position", new Vector2(curX, curY), MOVE_INTERVAL);
-            tween.Parallel().TweenProperty(node, "scale", new Vector2(1f, 1f), MOVE_INTERVAL);
-            tween.Parallel().TweenProperty(node, "rotation", 0, MOVE_INTERVAL);
+            RefreshCard(card, handSize, index);
         }
-        await Actions.Wait(MOVE_INTERVAL);
-        GD.Print("wait finish");
+        await Actions.Wait(Res.MOVE_INTERVAL);
     }
+
+    private static void RefreshCard(Card card, int handSize, int index)
+    {
+        GD.Print("RefreshCard");
+        CardNode node = CardRenderManager.Show(card);
+        Tween tween = node.CreateTween();
+        tween.Parallel().TweenProperty(node, "position", CalcHandCardPosition(handSize, index), Res.MOVE_INTERVAL);
+        tween.Parallel().TweenProperty(node, "scale", new Vector2(Res.SCALE_HAND, Res.SCALE_HAND), Res.MOVE_INTERVAL);
+        tween.Parallel().TweenProperty(node, "rotation", 0, Res.MOVE_INTERVAL);
+        node.ZIndex = Res.ZIndex_Hand + index;
+
+        switch (handState)
+        {
+            case HandState.None:
+                {
+                    node.SetGlow(Colors.Transparent);
+                    node.ClearAllInteract();
+                    break;
+                }
+            case HandState.Play:
+                {
+                    node.SetOnMouseHover(null);
+                    bool canPlay = card.GetPlayer().resource.Test(card.cost);
+                    GD.Print("canPlay: " + canPlay);
+                    node.SetGlow(canPlay ? Colors.White : Colors.Transparent);
+                    node.SetOnDrag(canPlay, async v =>
+                    {
+                        if (v) // drag start
+                        {
+                            node.CreateTween().TweenProperty(node, "scale", new Vector2(Res.SCALE_DRAG, Res.SCALE_DRAG), Res.MOVE_INTERVAL);
+                        } else // drag end
+                        {
+                            if (node.Position.Y < HandAnchor.Position.Y - Res.CardHeight / 2f)
+                            {
+                                node.ClearAllInteract();
+                                await Actions.PlayCard(card);
+                            } else
+                            {
+                                RefreshCard(card, handSize, index);
+                            }
+                        }
+
+                    }, () => RefreshCard(card, handSize, index)
+                    );
+                    break;
+                }
+            case HandState.Select:
+                {
+                    break;
+
+                }
+        }
+
+    }
+
+    private static Vector2 CalcHandCardPosition(int handSize, int index)
+    {
+        float centerX = HandAnchor.Position.X;
+        float centerY = HandAnchor.Position.Y;
+        float totalX = handSize * Res.CardWidth + (handSize - 1) * Res.HandCardX_Gap;
+        float startX = centerX - totalX / 2f + Res.CardWidth / 2f;
+        float curX = startX + index * (Res.CardWidth + Res.HandCardX_Gap);
+        float curY = centerY;
+        return new Vector2(curX, curY);
+
+    }
+}
+
+
+public enum HandState
+{
+    None,
+    Play, // can play card from hand
+    Select, // select card from hand
 }

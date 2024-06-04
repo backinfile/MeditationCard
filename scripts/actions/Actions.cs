@@ -8,12 +8,33 @@ public static class Actions
 {
     private static object waitResult = null;
 
+    public static async Task AddResource(GameResource resource)
+    {
+        GameResource playerResource = GetPlayer().resource;
+        foreach (var type in Utils.GetAllResType())
+        {
+            int curResource = playerResource.Get(type);
+            if (resource.Has(type))
+            {
+                int cnt = resource.Get(type);
+                BoardRenderManager.SetResourceCnt(type, curResource + (cnt > 0 ? "+" : "") + cnt);
+            }
+        }
+        await Wait(0.3f);
 
+        playerResource.Add(resource);
+
+        foreach (var type in Utils.GetAllResType())
+        {
+            int curResource = playerResource.Get(type);
+            BoardRenderManager.SetResourceCnt(type, curResource.ToString());
+        }
+    }
     public static async Task AddResource(ResourceType resourceType, int cnt)
     {
-        GetPlayer().resource.Add(resourceType, cnt);
-        BoardRenderManager.SetResourceCnt(resourceType, GetPlayer().resource.Get(resourceType));
-        await DoNothing();
+        GameResource resource = new GameResource();
+        resource.Add(resourceType, cnt);
+        await AddResource(resource);
     }
 
     public static async Task ClearResource()
@@ -21,9 +42,23 @@ public static class Actions
         foreach (var type in Utils.GetAllResType())
         {
             GetPlayer().resource.Remove(type);
-            BoardRenderManager.SetResourceCnt(type, 0);
+            BoardRenderManager.SetResourceCnt(type, "0");
         }
         await DoNothing();
+    }
+
+    public static async Task PlayCard(Card card)
+    {
+        GD.Print("playerCard");
+        var cost = card.cost.MakeCopy();
+        cost.Inverse();
+        await AddResource(cost);
+
+        GetPlayer().handPile.Remove(card);
+        GetBoard().playgound.Add(card);
+
+        await BoardRenderManager.RefreshPlaygound();
+        await HandRenderManager.RefreshHand();
     }
 
     public static async Task DrawCard(int cnt = 1)
@@ -89,5 +124,9 @@ public static class Actions
     public static Player GetPlayer()
     {
         return Utils.GetPlayer();
+    }
+    public static Board GetBoard()
+    {
+        return Utils.GetBoard();
     }
 }

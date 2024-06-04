@@ -63,16 +63,17 @@ layout_mode = 2
 
 [node name="HandAnchor" type="Node2D" parent="Board"]
 unique_name_in_owner = true
-position = Vector2(580, 575)
+position = Vector2(582, 558)
 
 [node name="ResourceAnchor" type="Node2D" parent="Board"]
 unique_name_in_owner = true
-position = Vector2(17, 493)
+position = Vector2(25, 402)
 
 [node name="ColorRect" type="ColorRect" parent="Board/ResourceAnchor"]
 offset_right = 102.0
 offset_bottom = 142.0
 color = Color(0.262745, 0.262745, 0.262745, 1)
 
-[node name="BoardAnchor" type="Node2D" parent="Board"]
-position = Vector2(578, 220)
+[node name="PlaygoundAnchor" type="Node2D" parent="Board"]
+unique_name_in_owner = true
+position = Vector2(550, 213)

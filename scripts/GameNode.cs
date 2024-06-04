@@ -42,6 +42,10 @@ public partial class GameNode : Node
         HandRenderManager.Init();
         GameManager.StartGame();
 
+    }
+
+    public void Test()
+    {
         Card card = new TmpCard();
         card.cost.Add(ResourceType.AnyRes, 1);
         card.cost.Add(ResourceType.Enlight, 1);
@@ -65,11 +69,12 @@ public partial class GameNode : Node
         arr.AddLast(2);
         arr.AddLast(3);
         arr.Shuffle();
-        foreach(var i in arr)
+        foreach (var i in arr)
         {
             GD.Print(i);
         }
     }
+
     public override async void _Process(double delta)
     {
         await GameManager.Update();
@@ -95,11 +100,11 @@ public partial class GameNode : Node
         await Instance.WaitBoardUpdatePrivate();
     }
 
-    public void AddCard(Node2D node)
+    public void AddCard(Control node)
     {
         AddChild(node);
     }
-    public void RemoveCard(Node2D node)
+    public void RemoveCard(Control node)
     {
         RemoveChild(node);
         node.QueueFree();

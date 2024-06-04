@@ -22,16 +22,19 @@ public partial class Player
             drawPile.Add(new TmpCard());
         }
         GD.Print("drawPile size = " + drawPile.Count);
-        await Actions.AddResource(ResourceType.Enlight, 1);
-        await Actions.AddResource(ResourceType.Light, 1);
-        await Actions.AddResource(ResourceType.Shadow, 1);
-        await Actions.AddResource(ResourceType.Heart, 1);
-        await Actions.AddResource(ResourceType.Stone, 1);
+
+        GameResource initResource = new GameResource();
+        initResource.Add(ResourceType.Enlight, 7);
+        initResource.Add(ResourceType.Light, 1);
+        initResource.Add(ResourceType.Shadow, 1);
+        initResource.Add(ResourceType.Heart, 1);
+        initResource.Add(ResourceType.Stone, 1);
+        await Actions.AddResource(initResource);
     }
 
     public async Task OnGameStart()
     {
-        await Actions.DrawCard(4);
+        await Actions.DrawCard(7);
     }
 
     public async Task OnTurnStart()

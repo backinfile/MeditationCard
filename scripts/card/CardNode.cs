@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class CardNode : Node2D
+public partial class CardNode : Control
 {
     private static PackedScene element_object = GD.Load<PackedScene>("res://nodes/card_node.tscn");
 
@@ -9,6 +9,22 @@ public partial class CardNode : Node2D
     public int CostElementSize = 20;
     [Export]
     public int CostElementGap = 0;
+
+
+
+
+    private double mouseDownTimer = -1f;
+    private const double TIME_TO_START_DRAG = 0.15f;
+
+    private Action _OnClick;
+    private Action _OnRightClick;
+    private Action<bool> _OnMouseEnter;
+
+    private Action<bool> _OnDrag;
+    private Action _onDragCancel;
+    private bool _draggable = false;
+    private bool _dragging = false;
+
 
     public static CardNode CreateNode()
     {
@@ -18,7 +34,7 @@ public partial class CardNode : Node2D
 
     public void Init(Card card)
     {
-        Node2D control = GetNode<Node2D>("Control");
+        var control = GetNode<Control>("Control");
         control.GetNode<Label>("Name").Text = card.Name;
 
         {
@@ -58,8 +74,136 @@ public partial class CardNode : Node2D
             costNode.GetNode<ColorRect>("ColorRect").Size = new Vector2(CostElementSize, curPositionY);
         }
 
+        var ClickHandler = control.GetNode<ColorRect>("ClickHandler");
 
+        ClickHandler.MouseEntered += () => { _OnMouseEnter?.Invoke(true); };
+        ClickHandler.MouseExited += () => { _OnMouseEnter?.Invoke(false); };
+        ClickHandler.GuiInput += (ev) =>
+        {
+            if (ev is InputEventMouseButton e && e.ButtonIndex == MouseButton.Left)
+            {
+                if (e.Pressed)
+                {
+                    mouseDownTimer = 0f;
+                } else
+                {
+                    if (_dragging)
+                    {
+                        _dragging = false;
+                        _OnDrag?.Invoke(false);
+                    } else if (mouseDownTimer >= 0 && mouseDownTimer <= TIME_TO_START_DRAG)
+                    {
+                        _OnClick?.Invoke();
+                    }
+                    mouseDownTimer = -1f;
+                }
+            } else if (ev is InputEventMouseMotion)
+            {
+                if (_draggable && mouseDownTimer >= 0 && !_dragging)
+                {
+                    _dragging = true;
+                    _OnDrag?.Invoke(true);
+                }
+            } if (ev is InputEventMouseButton e1 && e1.ButtonIndex == MouseButton.Right)
+            {
+                if (e1.Pressed) _OnRightClick?.Invoke();
+            }
+        };
+
+
+
+        { // for test
+            _draggable = true;
+            _OnClick = () => {
+                GD.Print("OnClick");
+            };
+            _OnDrag = (v) => {
+                GD.Print("_OnDrag " + v);
+                if (v)
+                {
+                    Tween tween = this.CreateTween();
+                    tween.Parallel().TweenProperty(this, "scale", new Vector2(1.2f, 1.2f), 0.1f);
+                }
+                else
+                {
+                    Tween tween = this.CreateTween();
+                    tween.Parallel().TweenProperty(this, "scale", new Vector2(1f, 1f), 0.1f);
+                }
+            };
+            _OnMouseEnter = (v) => {
+                GD.Print("_OnMouseEnter " + v);
+                //var target = v ? 1.5f : 1f;
+                //Tween tween = this.CreateTween();
+                //tween.Parallel().TweenProperty(this, "scale", new Vector2(target, target), 0.2f);
+                //tween.Parallel().TweenProperty(this, "position", new Vector2(target, target), 0.2f);
+            };
+        }
     }
 
 
+    public void SetGlow(Color color)
+    {
+        var control = GetNode<Control>("Control");
+        control.GetNode<ColorRect>("Glow").Color = color;
+    }
+
+    public void ClearAllInteract()
+    {
+        SetOnClick(null);
+        SetOnRightClick(null);
+        SetOnMouseHover(null);
+        SetOnDrag(false, null, null);
+    }
+
+    public void SetOnClick(Action action)
+    {
+        _OnClick = action;
+    }
+
+    public void SetOnRightClick(Action action)
+    {
+        _OnRightClick = action;
+    }
+
+    public void SetOnMouseHover(Action<bool> onHover)
+    {
+        _OnMouseEnter = onHover;
+    }
+
+    public void SetOnDrag(bool draggable, Action<bool> onDrag, Action onDragCancel)
+    {
+        if (_dragging && !draggable)
+        {
+            _dragging = false;
+            _onDragCancel?.Invoke();
+        }
+
+        _draggable = draggable;
+        _OnDrag = onDrag;
+        _onDragCancel = onDragCancel;
+    }
+
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+
+        {
+            if (!_dragging && mouseDownTimer >= 0f)
+            {
+                mouseDownTimer += delta;
+                if (mouseDownTimer > TIME_TO_START_DRAG && _draggable)
+                {
+                    _dragging = true;
+                    _OnDrag?.Invoke(true);
+                }
+            }
+        }
+
+        if (_dragging)
+        {
+            Vector2 position = GetViewport().GetMousePosition();
+            this.Position = position;
+        }
+    }
 }

@@ -82,8 +82,21 @@ public partial class GameResource
         }
     }
 
+    public void Inverse()
+    {
+        foreach(var type in Utils.GetAllResType())
+        {
+            int cnt = Get(type);
+            if (cnt != 0)
+            {
+                dict[type] = - cnt;
+            }
+        }
+    }
+
     public bool Test(GameResource resNeed)
     {
+        //GD.Print($"need:{resNeed}, own:{this}");
         var own = this.MakeCopy();
         foreach (ResourceType type in Enum.GetValues<ResourceType>())
         {

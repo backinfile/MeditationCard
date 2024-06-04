@@ -9,6 +9,8 @@ public class Board
     public BoardState State { get; set; } = BoardState.None;
     public Player Player { get; } = new Player();
 
+    public readonly List<Card> playgound = new List<Card>();
+
     public async Task Update()
     {
         if (State == BoardState.None)
@@ -25,6 +27,7 @@ public class Board
             case BoardState.Init:
                 {
                     GD.Print("State = Init");
+                    await Actions.Wait(1);
                     await Player.Init();
                     await ChangeStageTo(BoardState.GameStart);
                     break;
