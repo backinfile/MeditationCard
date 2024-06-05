@@ -45,45 +45,11 @@ public partial class CardNode : Control
         this.card = card;
         var control = GetNode<Control>("Control");
         control.GetNode<Label>("Name").Text = card.Name;
-
-        {
-            var costNode = control.GetNode("Cost");
-            int curPositionY = 0;
-            foreach (ResourceType type in Utils.GetAllResType())
-            {
-                if (card.cost.Has(type))
-                {
-                    int cnt = card.cost.Get(type);
-                    TextureRect rect = new TextureRect
-                    {
-                        Texture = type.GetTexture(),
-                        Position = new Vector2(0, curPositionY),
-                        Scale = new Vector2(CostElementSize, CostElementSize) / type.GetTexture().GetSize()
-                    };
-                    Label label = new Label
-                    {
-                        Text = cnt.ToString(),
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Size = new Vector2(CostElementSize, CostElementSize),
-                        Position = new Vector2(0, curPositionY),
-                        PivotOffset = new Vector2(CostElementSize / 2f, CostElementSize / 2f),
-                        Scale = new Vector2(CostElementSize / 40f, CostElementSize / 40f)
-                    };
-
-                    curPositionY += CostElementSize + CostElementGap;
-                    costNode.AddChild(rect);
-                    if (cnt > 1)
-                    {
-                        costNode.AddChild(label);
-                    }
-                }
-            }
-            if (curPositionY > 0) curPositionY -= CostElementGap;
-            costNode.GetNode<ColorRect>("ColorRect").Size = new Vector2(CostElementSize, curPositionY);
-        }
+        InitCost(card);
+        InitPrecipitation(card);
 
         var ClickHandler = control.GetNode<ColorRect>("ClickHandler");
+        ClickHandler.Visible = true;
 
         ClickHandler.MouseEntered += () => { _OnMouseEnter?.Invoke(true); };
         ClickHandler.MouseExited += () => { _OnMouseEnter?.Invoke(false); };
@@ -161,6 +127,100 @@ public partial class CardNode : Control
         }
 
         ClearAllInteract();
+
+    }
+
+    private void InitCost(Card card)
+    {
+        var control = GetNode<Control>("Control");
+        var costNode = control.GetNode("Cost");
+        int curPositionY = 0;
+        foreach (ResourceType type in Utils.GetAllResType())
+        {
+            if (card.cost.Has(type))
+            {
+                int cnt = card.cost.Get(type);
+                TextureRect rect = new TextureRect
+                {
+                    Texture = type.GetTexture(),
+                    Position = new Vector2(0, curPositionY),
+                    Scale = new Vector2(CostElementSize, CostElementSize) / type.GetTexture().GetSize()
+                };
+                Label label = new Label
+                {
+                    Text = cnt.ToString(),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Size = new Vector2(CostElementSize, CostElementSize),
+                    Position = new Vector2(0, curPositionY),
+                    PivotOffset = new Vector2(CostElementSize / 2f, CostElementSize / 2f),
+                    Scale = new Vector2(CostElementSize / 40f, CostElementSize / 40f)
+                };
+
+                curPositionY += CostElementSize + CostElementGap;
+                costNode.AddChild(rect);
+                if (cnt > 1)
+                {
+                    costNode.AddChild(label);
+                }
+            }
+        }
+        if (curPositionY > 0) curPositionY -= CostElementGap;
+        costNode.GetNode<ColorRect>("ColorRect").Size = new Vector2(CostElementSize, curPositionY);
+    }
+
+
+
+    private void InitPrecipitation(Card card)
+    {
+        var control = GetNode<Control>("Control");
+        var PrecipitationNode = control.GetNode<Control>("Precipitation");
+        var skill = card.GetSkill<PrecipitationSkill>();
+        if (skill == null)
+        {
+            PrecipitationNode.Visible = false;
+            return;
+        }
+        PrecipitationNode.Visible = true;
+
+        GameResource resource = skill.resource;
+        int num = resource.GetTypeNum();
+        float curPositionX = -num * CostElementSize / 2f;
+        float curPositionY = 0;
+        foreach (ResourceType type in Utils.GetAllResType())
+        {
+            if (resource.Has(type))
+            {
+                int cnt = resource.Get(type);
+                TextureRect rect = new TextureRect
+                {
+                    Texture = type.GetTexture(),
+                    Position = new Vector2(curPositionX, curPositionY),
+                    Scale = new Vector2(CostElementSize, CostElementSize) / type.GetTexture().GetSize()
+                };
+                Label label = new Label
+                {
+                    Text = cnt.ToString(),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Size = new Vector2(CostElementSize, CostElementSize),
+                    Position = new Vector2(curPositionX, curPositionY),
+                    PivotOffset = new Vector2(CostElementSize / 2f, CostElementSize / 2f),
+                    Scale = new Vector2(CostElementSize / 40f, CostElementSize / 40f)
+                };
+
+                curPositionX += CostElementSize;
+                PrecipitationNode.AddChild(rect);
+                if (cnt > 1)
+                {
+                    PrecipitationNode.AddChild(label);
+                }
+            }
+        }
+
+        ColorRect colorRect = PrecipitationNode.GetNode<ColorRect>("ColorRect");
+        colorRect.Size = new Vector2(CostElementSize * num, CostElementSize);
+        colorRect.Position = new Vector2(-num * CostElementSize / 2f, 0);
     }
 
 

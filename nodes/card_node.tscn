@@ -74,6 +74,17 @@ grow_vertical = 2
 text = "洞察之火"
 horizontal_alignment = 1
 
+[node name="Precipitation" type="Control" parent="Control"]
+anchors_preset = 0
+offset_top = 13.5714
+offset_bottom = 13.5714
+
+[node name="ColorRect" type="ColorRect" parent="Control/Precipitation"]
+offset_left = -30.0
+offset_right = 29.0
+offset_bottom = 16.0
+color = Color(0.345098, 0.345098, 0.345098, 0.745098)
+
 [node name="Cost" type="Control" parent="Control"]
 anchors_preset = 0
 offset_left = -48.0
@@ -85,7 +96,7 @@ offset_bottom = -68.1428
 layout_mode = 0
 offset_right = 20.0
 offset_bottom = 41.0
-color = Color(0.345098, 0.345098, 0.345098, 1)
+color = Color(0.345098, 0.345098, 0.345098, 0.745098)
 
 [node name="CardSelected" type="TextureRect" parent="Control"]
 visible = false
@@ -108,6 +119,7 @@ pivot_offset = Vector2(32, 32)
 texture = ExtResource("2_pddhh")
 
 [node name="ClickHandler" type="ColorRect" parent="Control"]
+visible = false
 layout_mode = 0
 offset_left = -56.4286
 offset_top = -76.4286

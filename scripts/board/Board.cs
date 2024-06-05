@@ -76,6 +76,11 @@ public class Board
                 }
         }
     }
+
+    public bool IsFull()
+    {
+        return playgound.Count >= Res.PlaygoundSize;
+    }
 }
 public enum BoardState
 {

@@ -73,6 +73,12 @@ public static class Actions
 
         await BoardRenderManager.RefreshPlaygound();
         await HandRenderManager.RefreshHand();
+
+        foreach (var skill in card.skills)
+        {
+            await skill.OnBuild(card);
+        }
+
         await SetPlayState(HandState.Play);
     }
 
@@ -131,6 +137,7 @@ public static class Actions
             await Wait(Res.MOVE_INTERVAL);
             CardRenderManager.Destroy(card);
         }
+        Utils.GetPlayer().discardPile.Add(card);
     }
 
     public static async Task ShuffleDiscardPileIntoDrawPile()
@@ -139,6 +146,7 @@ public static class Actions
         Player player = GetPlayer();
         player.drawPile.AddAll(player.discardPile);
         player.drawPile.Shuffle();
+        player.discardPile.Clear();
         await DoNothing();
     }
 

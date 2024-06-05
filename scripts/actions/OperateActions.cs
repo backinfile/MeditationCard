@@ -8,6 +8,15 @@ public static class OperateActions
 {
     private static object waitResult = null;
 
+    public static async Task DiscardCardFromHand(int cnt = 1)
+    {
+        List<Card> handPile = Utils.GetPlayer().handPile;
+        if (handPile.Count == 0) return;
+
+        Card card = await OperateActions.SelectCard(handPile, $"∆˙÷√{cnt}’≈ ÷≈∆");
+        await Actions.DiscardCard(card);
+    }
+
     private static int GetCardIndex(Card card)
     {
         {

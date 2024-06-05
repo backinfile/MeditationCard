@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 public partial class Player
@@ -17,16 +18,29 @@ public partial class Player
 
     public async Task Init()
     {
-        for (int i = 1; i <= 8; i++)
-        {
-            drawPile.Add(new TmpCard());
+        { // init drawPile
+            drawPile.Add(new CardBreakInfoLight());
+            drawPile.Add(new CardDreamBarrier());
+            drawPile.Add(new CardForestTrail());
+            drawPile.Add(new CardInspiration());
+            drawPile.Add(new CardIntoLight());
+            drawPile.Add(new CardMirrorSpirit());
+            drawPile.Add(new CardMirrorWorld());
+            drawPile.Add(new CardSpiritWorldLibrary());
+            drawPile.Add(new CardSummonMirrorSpirit());
+            drawPile.Add(new CardWithGod());
+            drawPile.Add(new HeroLight());
+
+            List<Card> ininateCards = drawPile.Where(c => c.GetSkill<IninateSkill>() != null).ToList();
+            foreach (var item in ininateCards) drawPile.Remove(item);
+            drawPile.Shuffle();
+            ininateCards.Shuffle();
+            drawPile.AddAll(ininateCards);
         }
-        drawPile.Shuffle();
-        drawPile.Add(new HeroLight());
         GD.Print("drawPile size = " + drawPile.Count);
 
         GameResource initResource = new GameResource();
-        initResource.Add(ResourceType.Enlight, 7);
+        initResource.Add(ResourceType.Enlight, 1);
         initResource.Add(ResourceType.Light, 1);
         initResource.Add(ResourceType.Shadow, 1);
         initResource.Add(ResourceType.Heart, 1);
@@ -86,7 +100,7 @@ public partial class Player
         return ConvertCost(cost, out converted);
     }
 
-    private bool ConvertCost(GameResource cost, out GameResource converted)
+    public bool ConvertCost(GameResource cost, out GameResource converted)
     {
         converted = new GameResource();
         cost = cost.MakeCopy();

@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 public abstract class Card
@@ -37,6 +38,18 @@ public abstract class Card
         return null;
     }
 
+    public T GetSkill<T>() where T : Skill
+    {
+        foreach(var skill in skills)
+        {
+            if (skill is T)
+            {
+                return skill as T;
+            }
+        }
+        return null;
+    }
+
     public virtual Card MakeCopy() // need to overwrite if contains complex constructor
     {
         return (Card)Activator.CreateInstance(this.GetType());
@@ -68,12 +81,16 @@ public abstract class Skill
     }
     public virtual async Task Use(Card card)
     {
-        await Actions.DoNothing();
     }
 
     public virtual void UpdateDescription()
     {
 
+    }
+
+    public async virtual Task OnBuild(Card card)
+    {
+        await Actions.DoNothing();
     }
 
 

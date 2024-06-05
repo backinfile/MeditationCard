@@ -44,22 +44,22 @@ public partial class GameNode : Node
         BoardRenderManager.Init();
         HandRenderManager.Init();
         BigCardScreenManager.Init();
+        CardManager.Init();
         GameManager.StartGame();
-
     }
 
     public void Test()
     {
-        Card card = new TmpCard();
-        card.cost.Add(ResourceType.AnyRes, 1);
-        card.cost.Add(ResourceType.Enlight, 1);
-        card.cost.Add(ResourceType.Soul, 1);
-        card.cost.Add(ResourceType.Heart, 2);
-        CardNode cardNode = CardRenderManager.Show(card);
-        cardNode.Position = new Vector2(200, 200);
+        //Card card = new TmpCard();
+        //card.cost.Add(ResourceType.AnyRes, 1);
+        //card.cost.Add(ResourceType.Enlight, 1);
+        //card.cost.Add(ResourceType.Soul, 1);
+        //card.cost.Add(ResourceType.Heart, 2);
+        //CardNode cardNode = CardRenderManager.Show(card);
+        //cardNode.Position = new Vector2(200, 200);
 
-        var tween = cardNode.CreateTween();
-        tween.Parallel();
+        //var tween = cardNode.CreateTween();
+        //tween.Parallel();
 
         foreach (var type in Utils.GetAllSubclasses(typeof(Card)))
         {

@@ -57,7 +57,7 @@ public static class HandRenderManager
                     node.SetOnMouseHover(null);
                     bool canPlay = card.CanPlay();
                     Utils.GetPlayer().ConvertCardCost(card, out var converted);
-                    GD.Print("canPlay: " + canPlay);
+                    //GD.Print("canPlay: " + canPlay);
                     node.SetGlow(canPlay ? Colors.White : Colors.Transparent);
                     node.SetOnDrag(canPlay, async v =>
                     {
@@ -65,6 +65,7 @@ public static class HandRenderManager
                         {
                             node.CreateTween().TweenProperty(node, "scale", new Vector2(Res.SCALE_DRAG, Res.SCALE_DRAG), Res.MOVE_INTERVAL);
                             BoardRenderManager.AddResourcePreview(converted, true);
+                            node.ZIndex = Res.ZIndex_Drag;
                         } else // drag end
                         {
                             if (node.Position.Y < HandAnchor.Position.Y - Res.CardHeight / 2f)

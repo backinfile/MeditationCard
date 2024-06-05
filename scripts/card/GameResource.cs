@@ -18,7 +18,7 @@ public partial class GameResource
     {
         for (int i = 0; i < res.Length / 2; i++)
         {
-            dict.Add((ResourceType)res[i], (int)res[i * 2 + 1]);
+            dict.Add((ResourceType)res[i * 2], (int)res[i * 2 + 1]);
         }
     }
 
@@ -72,10 +72,6 @@ public partial class GameResource
 
     public void Add(GameResource resource)
     {
-        if (resource.Get(ResourceType.AnyRes) != 0)
-        {
-            throw new Exception("add any resource");
-        }
         foreach (ResourceType type in Enum.GetValues<ResourceType>())
         {
             Add(type, resource.Get(type));
@@ -154,6 +150,10 @@ public partial class GameResource
         return res;
     }
 
+    public int GetTypeNum()
+    {
+        return dict.Count;
+    }
 }
 
 public enum ResourceType

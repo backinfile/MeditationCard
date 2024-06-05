@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http.Headers;
 
 public class CardManager
@@ -20,5 +21,10 @@ public class CardManager
         {
             allCards.Add((Card)Activator.CreateInstance(type));
         }
+    }
+
+    public static List<Card> GetPlayerInitCards()
+    {
+        return allCards.Select(c => c.MakeCopy()).ToList();
     }
 }
