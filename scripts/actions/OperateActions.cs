@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-public static class OperateActions
+public static class OperateActions 
 {
     private static object waitResult = null;
 
@@ -13,7 +13,7 @@ public static class OperateActions
         List<Card> handPile = Utils.GetPlayer().handPile;
         if (handPile.Count == 0) return;
 
-        Card card = await OperateActions.SelectCard(handPile, $"ÆúÖÃ{cnt}ÕÅÊÖÅÆ");
+        Card card = await OperateActions.SelectCard(handPile, $"å¼ƒç½®{cnt}å¼ æ‰‹ç‰Œ");
         await Actions.DiscardCard(card);
     }
 
@@ -60,7 +60,7 @@ public static class OperateActions
                 }
             });
         }
-        BoardRenderManager.SetTip(true, tip == "" ? $"Ñ¡Ôñ{cnt}ÕÅÅÆ" : tip);
+        BoardRenderManager.SetTip(true, tip == "" ? $"é€‰æ‹©{cnt}å¼ ç‰Œ" : tip);
 
         // TODO cancelable
 

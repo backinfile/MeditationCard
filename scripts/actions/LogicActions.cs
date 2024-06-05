@@ -1,6 +1,6 @@
 using Godot;
 using System;
 
-public static class LogicActions
+public static class LogicActions 
 {
 }

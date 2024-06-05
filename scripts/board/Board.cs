@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-public class Board
+public class Board 
 {
     public BoardState State { get; private set; } = BoardState.None;
     public Player Player { get; } = new Player();
@@ -44,7 +44,7 @@ public class Board
             case BoardState.TurnStart:
                 {
                     GD.Print("State = TurnStart");
-                    BoardRenderManager.SetTip(true, "�غϿ�ʼ");
+                    BoardRenderManager.SetTip(true, "回合开始");
                     Turn++;
 
                     BoardRenderManager.SetTurnInfo(Turn);

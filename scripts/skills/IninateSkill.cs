@@ -1,9 +1,9 @@
 using Godot;
 using System;
 
-public partial class IninateSkill : Skill
+public partial class IninateSkill : Skill 
 {
     public IninateSkill() {
-        description = "¹ÌÓÐ";
+        description = "å›ºæœ‰";
     }
 }

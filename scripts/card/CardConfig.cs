@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 
-public class CardConfig
+public class CardConfig 
 {
 
 }

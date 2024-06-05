@@ -1,11 +1,11 @@
 using Godot;
 using System;
 
-public partial class CardIntoLight : Card
+public partial class CardIntoLight : Card 
 {
     public CardIntoLight()
     {
-        Name = "步入光明";
+        Name = "姝ュ叆鍏夋槑";
         cost.Add(ResourceType.Light, 1);
         cost.Add(ResourceType.Heart, 1);
 

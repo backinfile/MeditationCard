@@ -2,11 +2,11 @@ using Godot;
 using System;
 using System.Threading.Tasks;
 
-public partial class CardInspiration : Card
+public partial class CardInspiration : Card 
 {
     public CardInspiration()
     {
-        Name = "Áé¸Ð";
+        Name = "çµæ„Ÿ";
         cost.Add(ResourceType.Enlight, 1);
         cost.Add(ResourceType.Heart, 1);
         cost.Add(ResourceType.AnyRes, 2);
@@ -17,7 +17,7 @@ public partial class CardInspiration : Card
     {
         public ActiveSkill()
         {
-            description = "ºáÖÃ->³é2Æú1";
+            description = "æ¨ªç½®->æŠ½2å¼ƒ1";
             activeSkills = true;
             tapCost = true;
         }

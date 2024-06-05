@@ -1,11 +1,11 @@
 using Godot;
 using System;
 
-public class HeroLight : Card
+public class HeroLight : Card 
 {
     public HeroLight()
     {
-        Name = "³õÊ¼Ó¢ĞÛ";
+        Name = "åˆå§‹è‹±é›„";
         Type = CardType.Hero;
         skills.Add(new IninateSkill());
         skills.Add(new PrecipitationSkill(new GameResource(ResourceType.Light, 1, ResourceType.Enlight, 1)));

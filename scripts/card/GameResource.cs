@@ -3,7 +3,7 @@ using Godot.Collections;
 using System;
 using System.Linq;
 
-public partial class GameResource
+public partial class GameResource 
 {
     private readonly Dictionary<ResourceType, int> dict = new();
 
@@ -173,14 +173,14 @@ public static class ResourceUtil
     {
         return type switch
         {
-            ResourceType.Enlight => "Æô",
-            ResourceType.Light => "¹â",
-            ResourceType.Shadow => "Ó°",
-            ResourceType.Stone => "Ê¯",
-            ResourceType.Heart => "ÐÄ",
-            ResourceType.AnyRes => "Í¨ÓÃ",
-            ResourceType.Soul => "»êÖÊ",
-            _ => "Î´Öª",
+            ResourceType.Enlight => "å¯",
+            ResourceType.Light => "å…‰",
+            ResourceType.Shadow => "å½±",
+            ResourceType.Stone => "çŸ³",
+            ResourceType.Heart => "å¿ƒ",
+            ResourceType.AnyRes => "é€šç”¨",
+            ResourceType.Soul => "é­‚è´¨",
+            _ => "æœªçŸ¥",
         };
     }
     public static Color GetColor(this ResourceType type)

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-public partial class GameNode : Node
+public partial class GameNode : Node 
 {
     public static GameNode Instance { get; private set; }
     private Control CardNodeLayer;

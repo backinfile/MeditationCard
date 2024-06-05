@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Threading.Tasks;
 
-public partial class TransformSkill : Skill
+public partial class TransformSkill : Skill 
 {
     private GameResource to;
 
@@ -14,7 +14,7 @@ public partial class TransformSkill : Skill
         activeSkills = true;
         tapCost = true;
 
-        description = "ºáÖÃ+" + resourceCost.ToString() + "->" + to.ToString();
+        description = "æ¨ªç½®+" + resourceCost.ToString() + "->" + to.ToString();
     }
 
     public override async Task Use(Card card)

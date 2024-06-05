@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Threading.Tasks;
 
-public partial class PrecipitationSkill : Skill
+public partial class PrecipitationSkill : Skill 
 {
     public GameResource resource;
 
@@ -11,7 +11,7 @@ public partial class PrecipitationSkill : Skill
         this.activeSkills = false;
         this.tapCost = false;
         this.resource = resource;
-        this.description = "³Áµí: " + resource.ToString();
+        this.description = "æ²‰æ·€: " + resource.ToString();
     }
 
     public async override Task OnTurnEnd(Card card)

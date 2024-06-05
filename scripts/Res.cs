@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public static class Res
+public static class Res 
 {
     public const int PlaygoundSize = 7;
 

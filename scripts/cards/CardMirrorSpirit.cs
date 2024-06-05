@@ -1,11 +1,11 @@
 using Godot;
 using System;
 
-public partial class CardMirrorSpirit : Card
+public partial class CardMirrorSpirit : Card 
 {
     public CardMirrorSpirit()
     {
-        Name = "¾µÁé";
+        Name = "é•œçµ";
         cost.Add(ResourceType.Light, 2);
         cost.Add(ResourceType.Heart, 1);
         cost.Add(ResourceType.AnyRes, 1);

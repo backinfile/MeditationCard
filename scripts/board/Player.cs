@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-public partial class Player
+public partial class Player 
 {
     public readonly List<Card> handPile = new List<Card>();
     public readonly List<Card> drawPile = new List<Card>();
@@ -123,7 +123,7 @@ public partial class Player
         // use enlight to fit each type
         {
             int leftEnlight = own.Get(ResourceType.Enlight);
-            foreach (var type in Utils.GetAllResType()) // Æô¿ÉÒÔÓÃÀ´´úÌæ¹âÓ°Ê¯ÐÄ
+            foreach (var type in Utils.GetAllResType()) // å¯å¯ä»¥ç”¨æ¥ä»£æ›¿å…‰å½±çŸ³å¿ƒ
             {
                 if (type == ResourceType.AnyRes || type == ResourceType.Enlight || type == ResourceType.Soul) continue;
                 int need = cost.Get(type);
@@ -140,7 +140,7 @@ public partial class Player
 
         // fit any type
         {
-            int needAny = cost.Get(ResourceType.AnyRes);// ÐèÇóÍ¨ÓÃÔªËØ£¬¿ÉÒÔÓÃÆô¹âÓ°Ê¯ÐÄ
+            int needAny = cost.Get(ResourceType.AnyRes);// éœ€æ±‚é€šç”¨å…ƒç´ ï¼Œå¯ä»¥ç”¨å¯å…‰å½±çŸ³å¿ƒ
             foreach (var type in new ResourceType[]{
                 ResourceType.Stone, ResourceType.Heart, ResourceType.Shadow, ResourceType.Light, ResourceType.Enlight
             })
@@ -157,7 +157,7 @@ public partial class Player
             }
         }
 
-        // »¹Ê£ÏÂÁËÔªËØÃ»ÓÐÂú×ã
+        // è¿˜å‰©ä¸‹äº†å…ƒç´ æ²¡æœ‰æ»¡è¶³
         if (cost.Total() > 0)
         {
             return false;

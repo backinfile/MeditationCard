@@ -1,11 +1,11 @@
-﻿using Godot;
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Security.AccessControl;
 using System.Threading.Tasks;
 
-public static class Actions
+public static class Actions 
 {
     public static async Task SetPlayState(HandState state)
     {
@@ -29,7 +29,7 @@ public static class Actions
 
     public static async Task AddResource(GameResource resource, bool remove = false, bool animation = true)
     {
-        if (remove)
+        if (remove) 
         {
             resource = resource.MakeCopy();
             resource.Inverse();

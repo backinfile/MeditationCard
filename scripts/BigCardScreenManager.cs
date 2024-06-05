@@ -1,8 +1,8 @@
-﻿using Godot;
+using Godot;
 using System;
 using System.Runtime.CompilerServices;
 
-public partial class BigCardScreenManager
+public partial class BigCardScreenManager 
 {
     private static CanvasLayer BigCardScreen;
     private static Card curCard;

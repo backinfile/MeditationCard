@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-public abstract class Card
+public abstract class Card 
 {
     public string Name { get; protected set; } = "null";
 
@@ -20,7 +20,7 @@ public abstract class Card
 
     public virtual bool CanPlay()
     {
-        // µ¥Î»²»¿É³¬¹ý7¸ö
+        // å•ä½ä¸å¯è¶…è¿‡7ä¸ª
         if (Utils.GetBoard().playgound.Count >= Res.PlaygoundSize)
         {
             return false;

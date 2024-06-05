@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 
-public static class HandRenderManager
+public static class HandRenderManager 
 {
     private static Control HandAnchor;
     private static HandState handState = HandState.Play;

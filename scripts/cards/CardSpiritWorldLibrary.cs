@@ -1,11 +1,11 @@
 using Godot;
 using System;
 
-public partial class CardSpiritWorldLibrary : Card
+public partial class CardSpiritWorldLibrary : Card 
 {
     public CardSpiritWorldLibrary()
     {
-        Name = "Áé½çÍ¼Êé¹İ";
+        Name = "çµç•Œå›¾ä¹¦é¦†";
         cost.Add(ResourceType.Enlight, 2);
         cost.Add(ResourceType.Light, 2);
         cost.Add(ResourceType.Stone, 1);

@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Threading.Tasks;
 
-public partial class BoardRenderManager
+public partial class BoardRenderManager 
 {
     private static Control PlaygoundAnchor;
     private static Control TipAnchor;
@@ -20,7 +20,7 @@ public partial class BoardRenderManager
         TipAnchor = GameNode.Instance.GetNode<Control>("%TipAnchor");
         TipAnchor.Visible = false;
 
-        // 资源图标
+        // 璧勬簮鍥炬爣
         {
             var CntMap = new System.Collections.Generic.Dictionary<ResourceType, Label>();
 
@@ -70,7 +70,7 @@ public partial class BoardRenderManager
         }
 
 
-        // 回合结束按钮
+        // 鍥炲悎缁撴潫鎸夐挳
         {
             TurnEndButton = GameNode.Instance.GetNode<Button>("%TurnEndButton");
             TurnEndButton.Pressed += async () =>
@@ -111,7 +111,7 @@ public partial class BoardRenderManager
 
     public static void SetTurnInfo(int turn)
     {
-        GameTurnInfo.Text = $"现在是第{turn}回合";
+        GameTurnInfo.Text = $"鐜板湪鏄{turn}鍥炲悎";
     }
 
     public static async Task SetPlaygoundState(HandState state)

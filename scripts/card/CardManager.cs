@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 
-public class CardManager
+public class CardManager 
 {
 
     public static List<Card> CreateShop()

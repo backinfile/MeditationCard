@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-public static class Utils
+public static class Utils 
 {
     private static Random random = new Random();
     private static readonly ResourceType[] resourceTypes = { ResourceType.Enlight, ResourceType.Light, ResourceType.Shadow, ResourceType.Heart, ResourceType.Stone, ResourceType.AnyRes, ResourceType.Soul };

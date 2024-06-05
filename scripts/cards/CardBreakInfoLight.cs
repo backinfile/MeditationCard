@@ -6,7 +6,7 @@ public partial class CardBreakInfoLight : Card
 {
     public CardBreakInfoLight()
     {
-        Name = "灵光乍现";
+        Name = "鐏靛厜涔嶇幇";
         cost.Add(ResourceType.Enlight, 1);
         cost.Add(ResourceType.Light, 2);
         skills.Add(new ActiveSkill());
@@ -14,11 +14,11 @@ public partial class CardBreakInfoLight : Card
 
     class ActiveSkill : Skill
     {
-        public ActiveSkill()
+        public ActiveSkill() 
         {
             activeSkills = true;
             tapCost = false;
-            description = "摧毁自身，将所有光转化为启";
+            description = "鎽ф瘉鑷韩锛屽皢鎵�鏈夊厜杞寲涓哄惎";
         }
 
         public override bool CanUse(Card card)

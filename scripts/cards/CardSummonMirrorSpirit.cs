@@ -2,11 +2,11 @@ using Godot;
 using System;
 using System.Threading.Tasks;
 
-public partial class CardSummonMirrorSpirit : Card
+public partial class CardSummonMirrorSpirit : Card 
 {
     public CardSummonMirrorSpirit()
     {
-        Name = "ÕÙ»½£º¾µÁé";
+        Name = "å¬å”¤ï¼šé•œçµ";
 
         cost.Add(ResourceType.Enlight, 1);
         cost.Add(ResourceType.Stone, 1);
@@ -21,7 +21,7 @@ public partial class CardSummonMirrorSpirit : Card
             activeSkills = true;
             tapCost = true;
             resourceCost.Add(ResourceType.Light, 4);
-            description = "ºáÖÃ+4¹â->ÕÙ»½¾µÁé";
+            description = "æ¨ªç½®+4å…‰->å¬å”¤é•œçµ";
         }
 
         public override bool CanUse(Card card)

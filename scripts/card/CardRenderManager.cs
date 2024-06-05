@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-public partial class CardRenderManager
+public partial class CardRenderManager 
 {
     private static readonly Dictionary<Card, CardNode> map = new Dictionary<Card, CardNode>();
 

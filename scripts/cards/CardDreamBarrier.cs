@@ -3,9 +3,9 @@ using System;
 
 public partial class CardDreamBarrier : Card
 {
-    public CardDreamBarrier()
+    public CardDreamBarrier() 
     {
-        Name = "ÃÎ¾³ÆÁÕÏ";
+        Name = "æ¢¦å¢ƒå±éšœ";
         cost.Add(ResourceType.Enlight, 1);
         cost.Add(ResourceType.Heart, 1);
         cost.Add(ResourceType.AnyRes, 2);

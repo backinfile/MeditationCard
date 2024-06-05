@@ -97,7 +97,7 @@ public partial class CardNode : Control
 
 
         { // for test
-            _draggable = true;
+            _draggable = true; 
             _OnClick = () =>
             {
                 GD.Print("OnClick");

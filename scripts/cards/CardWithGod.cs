@@ -3,11 +3,11 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-public partial class CardWithGod : Card
+public partial class CardWithGod : Card 
 {
     public CardWithGod()
     {
-        Name = "êî¼ûÉñÃ÷";
+        Name = "è§è§ç¥æ˜";
 
         cost.Add(ResourceType.Enlight, 1);
         cost.Add(ResourceType.Light, 1);
@@ -25,7 +25,7 @@ public partial class CardWithGod : Card
         {
             activeSkills = true;
             tapCost = true;
-            description = "ºáÖÃ->´İ»ÙÒ»¸ö¹âË¼Ğ÷£¬»ñµÃ7¹â";
+            description = "æ¨ªç½®->æ‘§æ¯ä¸€ä¸ªå…‰æ€ç»ªï¼Œè·å¾—7å…‰";
         }
 
         public override bool CanUse(Card card)
@@ -37,7 +37,7 @@ public partial class CardWithGod : Card
         public override async Task Use(Card card)
         {
             var toDestroy = Utils.GetBoard().playgound.Where(c => c != card && c.cost.Get(ResourceType.Light) > 0).ToList();
-            Card destoryCard = await OperateActions.SelectCard(toDestroy, "´İ»ÙÒ»¸ö¹âË¼Ğ÷");
+            Card destoryCard = await OperateActions.SelectCard(toDestroy, "æ‘§æ¯ä¸€ä¸ªå…‰æ€ç»ª");
             await Actions.DiscardCard(destoryCard);
             await Actions.AddResource(new GameResource(ResourceType.Light, 7));
         }

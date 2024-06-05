@@ -2,14 +2,14 @@ using Godot;
 using System;
 using System.Threading.Tasks;
 
-public partial class GainResOnBuildSkill : Skill
+public partial class GainResOnBuildSkill : Skill 
 {
     private GameResource resource;
 
     public GainResOnBuildSkill(GameResource resource)
     {
         this.resource = resource;
-        description = "½¨ÔìÊ±»ñµÃ£º" + resource.ToString();
+        description = "å»ºé€ æ—¶èŽ·å¾—ï¼š" + resource.ToString();
     }
 
     public override async Task OnBuild(Card card)

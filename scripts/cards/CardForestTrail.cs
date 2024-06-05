@@ -3,11 +3,11 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-public partial class CardForestTrail : Card
+public partial class CardForestTrail : Card 
 {
     public CardForestTrail()
     {
-        Name = "ÁÖÖĞĞ¡¾¶";
+        Name = "æ—ä¸­å°å¾„";
         cost.Add(ResourceType.Enlight, 1);
         skills.Add(new ActiveSkill());
     }
@@ -19,7 +19,7 @@ public partial class CardForestTrail : Card
             activeSkills = true;
             tapCost = true;
             resourceCost.Add(ResourceType.AnyRes, 1);
-            description = "ºáÖÃ+1Í¨ÓÃ->1Æô1¹â";
+            description = "æ¨ªç½®+1é€šç”¨->1å¯1å…‰";
         }
 
         public async override Task Use(Card card)

@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Threading.Tasks;
 
-public partial class DiscardHandToGainSkill : Skill
+public partial class DiscardHandToGainSkill : Skill 
 {
     private GameResource resource;
     public DiscardHandToGainSkill(GameResource resource)
@@ -10,7 +10,7 @@ public partial class DiscardHandToGainSkill : Skill
         this.resource = resource;
         activeSkills = true;
         tapCost = true;
-        description = "ºáÖÃ->ÆúÖÃ1ÕÅÊÖÅÆ£¬»ñµÃ1Æô1¹â";
+        description = "æ¨ªç½®->å¼ƒç½®1å¼ æ‰‹ç‰Œï¼Œè·å¾—1å¯1å…‰";
     }
 
     public override bool CanUse(Card card)
@@ -21,7 +21,7 @@ public partial class DiscardHandToGainSkill : Skill
 
     public override async Task Use(Card card)
     {
-        Card discard = await OperateActions.SelectCard(Utils.GetPlayer().handPile, "ÆúÖÃ1ÕÅÊÖÅÆ");
+        Card discard = await OperateActions.SelectCard(Utils.GetPlayer().handPile, "å¼ƒç½®1å¼ æ‰‹ç‰Œ");
         await Actions.DiscardCard(discard);
         await Actions.AddResource(new GameResource(ResourceType.Enlight, 1, ResourceType.Light, 1));
     }
