@@ -11,6 +11,7 @@ public partial class CardNode : Control
     public int CostElementGap = 0;
 
     private TextureRect CardFocus;
+    private TextureRect CardSelected;
 
 
 
@@ -33,6 +34,9 @@ public partial class CardNode : Control
     {
         CardNode node = element_object.Instantiate<CardNode>();
         node.CardFocus = node.GetNode<Control>("Control").GetNode<TextureRect>("CardFocus");
+        node.CardFocus.Visible = false;
+        node.CardSelected = node.GetNode<Control>("Control").GetNode<TextureRect>("CardSelected");
+        node.CardSelected.Visible = false;
         return node;
     }
 
@@ -212,6 +216,11 @@ public partial class CardNode : Control
     public void SetCostHide(bool hide = true)
     {
         GetNode<Control>("Control").GetNode<Control>("Cost").Visible = !hide;
+    }
+
+    public void SetSelected(bool selected)
+    {
+        CardSelected.Visible = selected;
     }
 
 

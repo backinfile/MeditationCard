@@ -41,7 +41,7 @@ public static class HandRenderManager
         Tween tween = node.CreateTween();
         tween.Parallel().TweenProperty(node, "position", CalcHandCardPosition(handSize, index), Res.MOVE_INTERVAL);
         tween.Parallel().TweenProperty(node, "scale", new Vector2(Res.SCALE_HAND, Res.SCALE_HAND), Res.MOVE_INTERVAL);
-        tween.Parallel().TweenProperty(node, "rotation", 0, Res.MOVE_INTERVAL);
+        tween.Parallel().TweenProperty(node, "rotation_degrees", 0, Res.MOVE_INTERVAL);
         node.ZIndex = Res.ZIndex_Hand + index;
 
         switch (handState)

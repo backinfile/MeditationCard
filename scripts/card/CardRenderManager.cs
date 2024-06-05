@@ -32,15 +32,16 @@ public partial class CardRenderManager
         GD.Print("create card node " + card.Name);
 
         CardNode cardNode = CardNode.CreateNode();
+        cardNode.Position = new Vector2(0, GameNode.Instance.GetViewport().GetVisibleRect().Size.Y);
+        cardNode.Scale = new Vector2(0, 0);
         cardNode.Init(card);
         GameNode.Instance.AddCard(cardNode);
         map[card] = cardNode;
         return cardNode;
     }
 
-    public static void Hide(Card card)
+    public static void Destroy(Card card)
     {
-
         GD.Print("remove card node " + card.Name);
         if (map.TryGetValue(card, out CardNode cardNode))
         {

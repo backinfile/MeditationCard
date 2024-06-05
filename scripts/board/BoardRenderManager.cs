@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 public partial class BoardRenderManager
 {
     private static Control PlaygoundAnchor;
+    private static Control TipAnchor;
     private static Button TurnEndButton;
     private static Label GameTurnInfo;
 
@@ -16,6 +17,8 @@ public partial class BoardRenderManager
     public static void Init()
     {
         PlaygoundAnchor = GameNode.Instance.GetNode<Control>("%PlaygoundAnchor");
+        TipAnchor = GameNode.Instance.GetNode<Control>("%TipAnchor");
+        TipAnchor.Visible = false;
 
         // 资源图标
         {
@@ -70,16 +73,17 @@ public partial class BoardRenderManager
         // 回合结束按钮
         {
             TurnEndButton = GameNode.Instance.GetNode<Button>("%TurnEndButton");
-            TurnEndButton.Pressed += async () => {
+            TurnEndButton.Pressed += async () =>
+            {
                 ResetPlayerResourceView();
-                await Actions.EndTurn(); 
+                await Actions.EndTurn();
             };
             TurnEndButton.MouseEntered += () =>
             {
                 GameResource resource = new GameResource();
-                foreach(var card in Utils.GetBoard().playgound)
+                foreach (var card in Utils.GetBoard().playgound)
                 {
-                    foreach(var skill in card.skills)
+                    foreach (var skill in card.skills)
                     {
                         if (skill is PrecipitationSkill s)
                         {
@@ -120,7 +124,7 @@ public partial class BoardRenderManager
     {
         var playgound = Utils.GetBoard().playgound;
         int index = -1;
-        foreach(Card card in playgound)
+        foreach (Card card in playgound)
         {
             index++;
             RefreshPlaygoundCard(card, index);
@@ -131,11 +135,14 @@ public partial class BoardRenderManager
     private static void RefreshPlaygoundCard(Card card, int index)
     {
         GD.Print("RefreshCard");
+        
+
         CardNode node = CardRenderManager.Show(card);
+        float rotation = card.tapped ? 90f : 0;
         Tween tween = node.CreateTween();
         tween.Parallel().TweenProperty(node, "position", CalcCardPosition(index), Res.MOVE_INTERVAL);
         tween.Parallel().TweenProperty(node, "scale", new Vector2(Res.SCALE_PLAYGROUNG, Res.SCALE_PLAYGROUNG), Res.MOVE_INTERVAL);
-        tween.Parallel().TweenProperty(node, "rotation", 0, Res.MOVE_INTERVAL);
+        tween.Parallel().TweenProperty(node, "rotation_degrees", rotation, Res.MOVE_INTERVAL);
         node.ZIndex = Res.ZIndex_Board + index;
 
         node.SetCostHide(true);
@@ -152,9 +159,33 @@ public partial class BoardRenderManager
                 {
                     node.SetGlow(Colors.Transparent);
                     node.ClearAllInteract();
-                    //bool canPlay = card.CanPlay();
-                    //GD.Print("canPlay: " + canPlay);
-                    //node.SetGlow(canPlay ? Colors.Blue : Colors.Transparent);
+                    Skill skill = card.GetActivableSkill();
+                    if (skill != null && skill.CanUse(card))
+                    {
+                        GD.Print("skill can use");
+                        Utils.GetPlayer().ConvertSkillCost(card, skill, out var converted);
+                        node.SetGlow(Colors.White);
+                        node.SetOnMouseHover(v =>
+                        {
+                            if (v)
+                            {
+                                BoardRenderManager.AddResourcePreview(converted, true);
+                            }
+                            else
+                            {
+                                BoardRenderManager.ResetPlayerResourceView();
+                            }
+                        });
+                        node.SetOnClick(async () =>
+                        {
+                            BoardRenderManager.ResetPlayerResourceView();
+                            await Actions.UseSkill(card, skill);
+                        });
+                    }
+                    else
+                    {
+                        GD.Print("skill can not use");
+                    }
                     break;
                 }
             case HandState.Select:
@@ -206,6 +237,12 @@ public partial class BoardRenderManager
             int curResource = playerResource.Get(type);
             BoardRenderManager.SetResourceCnt(type, curResource.ToString());
         }
+    }
+
+    public static void SetTip(bool show,  string text = "")
+    {
+        TipAnchor.Visible = show;
+        TipAnchor.GetNode<Label>("Label").Text = text;
     }
 }
 

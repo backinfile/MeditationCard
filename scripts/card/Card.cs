@@ -28,6 +28,15 @@ public abstract class Card
         return Utils.GetPlayer().ConvertCardCost(this, out _);
     }
 
+    public Skill GetActivableSkill()
+    {
+        foreach(var skill in skills)
+        {
+            if (skill.activeSkills) return skill;
+        }
+        return null;
+    }
+
     public virtual Card MakeCopy() // need to overwrite if contains complex constructor
     {
         return (Card)Activator.CreateInstance(this.GetType());
@@ -44,15 +53,17 @@ public enum CardType
 public abstract class Skill
 {
     public bool activeSkills = false; // need active?
+    public bool isKeyword = false;
 
     public bool tapCost = false; // need tap for trigger skill
     public GameResource resourceCost = new GameResource();
-    protected string description = "";
+    public string description = "";
 
     public virtual bool CanUse(Card card)
     {
         if (!activeSkills) return false;
-        if (!this.GetPlayer().resource.Test(resourceCost)) return false;
+        if (tapCost && card.tapped) return false;
+        if (!Utils.GetPlayer().ConvertSkillCost(card, this, out _)) return false;
         return true;
     }
     public virtual async Task Use(Card card)

@@ -1,13 +1,12 @@
 ﻿using Godot;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Security.AccessControl;
 using System.Threading.Tasks;
 
 public static class Actions
 {
-    private static object waitResult = null;
-
     public static async Task SetPlayState(HandState state)
     {
         BoardRenderManager.SetTurnEndBtn(state == HandState.Play);
@@ -65,6 +64,7 @@ public static class Actions
     public static async Task PlayCard(Card card)
     {
         GD.Print("playerCard");
+        //await SetPlayState(HandState.None);
         GetPlayer().ConvertCardCost(card, out var converted);
         await AddResource(converted, true, false);
 
@@ -73,6 +73,24 @@ public static class Actions
 
         await BoardRenderManager.RefreshPlaygound();
         await HandRenderManager.RefreshHand();
+        await SetPlayState(HandState.Play);
+    }
+
+    public static async Task UseSkill(Card card, Skill skill)
+    {
+        GD.Print("UseSkill");
+        await SetPlayState(HandState.None);
+        GetPlayer().ConvertSkillCost(card, skill, out var converted);
+        await AddResource(converted, true, false);
+
+        if (skill.tapCost)
+        {
+            card.tapped = true;
+        }
+        await BoardRenderManager.RefreshPlaygound();
+        await skill.Use(card);
+
+        await SetPlayState(HandState.Play);
     }
 
     public static async Task DrawCard(int cnt = 1)
@@ -95,6 +113,26 @@ public static class Actions
             await HandRenderManager.RefreshHand();
         }
     }
+
+    public static async Task DiscardCard(Card card)
+    {
+        Utils.GetBoard().playgound.Remove(card);
+        Utils.GetPlayer().handPile.Remove(card);
+        Utils.GetPlayer().discardPile.Remove(card);
+        Utils.GetPlayer().drawPile.Remove(card);
+        Utils.GetPlayer().handPile.Remove(card);
+        var node = CardRenderManager.GetNode(card);
+        if (node != null)
+        {
+            Tween tween = node.CreateTween();
+            tween.Parallel().TweenProperty(node, "position", GameNode.Instance.GetViewport().GetVisibleRect().Size, Res.MOVE_INTERVAL);
+            tween.Parallel().TweenProperty(node, "scale", new Vector2(0, 0), Res.MOVE_INTERVAL);
+            tween.Parallel().TweenProperty(node, "rotation_degrees", 0, Res.MOVE_INTERVAL);
+            await Wait(Res.MOVE_INTERVAL);
+            CardRenderManager.Destroy(card);
+        }
+    }
+
     public static async Task ShuffleDiscardPileIntoDrawPile()
     {
         GD.Print("Action:ShuffleDiscardPileIntoDrawPile");
@@ -102,28 +140,6 @@ public static class Actions
         player.drawPile.AddAll(player.discardPile);
         player.drawPile.Shuffle();
         await DoNothing();
-    }
-
-    public static async Task<Card> SelectCardOnBoard(List<Card> selectFrom, bool cancelable = false)
-    {
-        await Wait(1);
-        return null;
-    }
-
-    private static async Task<T> WaitOperateResult<T>()
-    {
-        waitResult = null;
-        while (true)
-        {
-            await GameNode.WaitBoardUpdate();
-            if (waitResult != null)
-            {
-                break;
-            }
-        }
-        T result = (T)waitResult;
-        waitResult = null;
-        return result;
     }
 
     public static async Task Wait(double time)

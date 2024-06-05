@@ -20,6 +20,7 @@ public static class Res
     public const float SCALE_PLAYGROUNG = 0.6f;
 
 
+    public const int ZIndex_Card_To_Select = 200;
     public const int ZIndex_Mask = 100;
     public const int ZIndex_Drag = -100;
     public const int ZIndex_Hand = -200;

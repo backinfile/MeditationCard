@@ -44,11 +44,13 @@ public class Board
             case BoardState.TurnStart:
                 {
                     GD.Print("State = TurnStart");
+                    BoardRenderManager.SetTip(true, "回合开始");
                     Turn++;
 
                     BoardRenderManager.SetTurnInfo(Turn);
                     await Player.OnTurnStart();
                     await ChangeStageTo(BoardState.Turn);
+                    BoardRenderManager.SetTip(false);
                     break;
                 }
             case BoardState.Turn:

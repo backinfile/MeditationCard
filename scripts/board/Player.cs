@@ -21,6 +21,8 @@ public partial class Player
         {
             drawPile.Add(new TmpCard());
         }
+        drawPile.Shuffle();
+        drawPile.Add(new HeroLight());
         GD.Print("drawPile size = " + drawPile.Count);
 
         GameResource initResource = new GameResource();
@@ -39,6 +41,11 @@ public partial class Player
 
     public async Task OnTurnStart()
     {
+        foreach(var card in Utils.GetBoard().playgound)
+        {
+            card.tapped = false;
+        }
+        await BoardRenderManager.RefreshPlaygound();
         await Actions.DrawCard(1);
     }
 
@@ -46,7 +53,7 @@ public partial class Player
     {
         foreach (var card in Utils.GetBoard().playgound)
         {
-            foreach(var skill in card.skills)
+            foreach (var skill in card.skills)
             {
                 await skill.OnTurnEnd(card);
             }
@@ -67,10 +74,22 @@ public partial class Player
 
     public bool ConvertCardCost(Card card, out GameResource converted)
     {
-        converted = new GameResource();
         GameResource cost = card.cost.MakeCopy();
         // TODO: may have some reduce resource effect
+        return ConvertCost(cost, out converted);
+    }
 
+    public bool ConvertSkillCost(Card card, Skill skill, out GameResource converted)
+    {
+        GameResource cost = skill.resourceCost.MakeCopy();
+        // TODO: may have some reduce resource effect
+        return ConvertCost(cost, out converted);
+    }
+
+    private bool ConvertCost(GameResource cost, out GameResource converted)
+    {
+        converted = new GameResource();
+        cost = cost.MakeCopy();
         var own = resource.MakeCopy();
 
         // fit need for each type
@@ -108,9 +127,9 @@ public partial class Player
         // fit any type
         {
             int needAny = cost.Get(ResourceType.AnyRes);// 需求通用元素，可以用启光影石心
-            foreach (var type in new ResourceType[]{ 
+            foreach (var type in new ResourceType[]{
                 ResourceType.Stone, ResourceType.Heart, ResourceType.Shadow, ResourceType.Light, ResourceType.Enlight
-            }) 
+            })
             {
                 int has = own.Get(type);
                 int provide = Math.Min(has, needAny);

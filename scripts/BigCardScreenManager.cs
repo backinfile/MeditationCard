@@ -27,7 +27,22 @@ public partial class BigCardScreenManager
         BigCardScreen.Visible = true;
         Control infoControl = BigCardScreen.GetChild<Control>(0).GetNode<Control>("CenterContainer").GetChild<Control>(0);
         infoControl.GetNode<Label>("Name").Text = card.Name;
-        infoControl.GetNode<Label>("Cost").Text = "cost: " + card.cost.ToString();
+        infoControl.GetNode<Label>("Cost").Text = "打出消耗: " + card.cost.ToString();
+
+        Control descriptions = infoControl.GetNode<Control>("BigCardScrrenSkillDescription");
+        foreach(var child in descriptions.GetChildren())
+        {
+            descriptions.RemoveChild(child);
+            child.QueueFree();
+        }
+        foreach(var skill in card.skills)
+        {
+            descriptions.AddChild(new HSeparator());
+            Label label = new Label();
+            label.Text = skill.description;
+            label.HorizontalAlignment = HorizontalAlignment.Center;
+            descriptions.AddChild(label);
+        }
 
         CardRenderManager.GetNode(card)?.SetFocus(true);
     }

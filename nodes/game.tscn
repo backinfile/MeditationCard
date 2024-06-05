@@ -63,6 +63,44 @@ offset_right = 102.0
 offset_bottom = 142.0
 color = Color(0.262745, 0.262745, 0.262745, 1)
 
+[node name="TipAnchor" type="Control" parent="Board/CanvasLayer"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = 56.5
+offset_bottom = 79.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Board/CanvasLayer/TipAnchor"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.25098)
+
+[node name="Label" type="Label" parent="Board/CanvasLayer/TipAnchor"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -41.5
+offset_top = -11.5
+offset_right = 41.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+text = "asdasdada"
+horizontal_alignment = 1
+
 [node name="ButtonAnchor" type="VBoxContainer" parent="Board/CanvasLayer"]
 offset_left = 1021.0
 offset_top = 472.0
@@ -113,7 +151,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-color = Color(0, 0, 0, 0.709804)
+color = Color(0, 0, 0, 0.776471)
 
 [node name="CenterContainer" type="CenterContainer" parent="BigCardScreen/Control"]
 layout_mode = 1
@@ -133,9 +171,18 @@ text = "card name"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="HSeparator" type="HSeparator" parent="BigCardScreen/Control/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
 [node name="Cost" type="Label" parent="BigCardScreen/Control/CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "cost: "
+horizontal_alignment = 1
 
-[node name="BigCardScrrenSkillDescription" type="Control" parent="BigCardScreen/Control/CenterContainer/VBoxContainer"]
+[node name="BigCardScrrenSkillDescription" type="VBoxContainer" parent="BigCardScreen/Control/CenterContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="BigCardScreen/Control/CenterContainer/VBoxContainer/BigCardScrrenSkillDescription"]
+layout_mode = 2
+text = "123"
+horizontal_alignment = 1
