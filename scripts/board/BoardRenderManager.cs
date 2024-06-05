@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 
 public partial class BoardRenderManager
 {
-    private static Node2D PlaygoundAnchor;
+    private static Control PlaygoundAnchor;
     public static Action<ResourceType, string> SetResourceCnt;
 
-    private static PlaygoundState playgoundState = PlaygoundState.Use;
+    private static HandState playgoundState = HandState.None;
 
 
     public static void Init()
     {
-        PlaygoundAnchor = GameNode.Instance.GetNode<Node2D>("%PlaygoundAnchor");
+        PlaygoundAnchor = GameNode.Instance.GetNode<Control>("%PlaygoundAnchor");
 
         Dictionary<ResourceType, Label> CntMap = new Dictionary<ResourceType, Label>();
 
@@ -62,7 +62,7 @@ public partial class BoardRenderManager
         };
     }
 
-    public static async Task SetPlaygoundState(PlaygoundState state)
+    public static async Task SetPlaygoundState(HandState state)
     {
         playgoundState = state;
         await RefreshPlaygound();
@@ -90,15 +90,17 @@ public partial class BoardRenderManager
         tween.Parallel().TweenProperty(node, "rotation", 0, Res.MOVE_INTERVAL);
         node.ZIndex = Res.ZIndex_Board + index;
 
+        node.SetCostHide(true);
+
         switch (playgoundState)
         {
-            case PlaygoundState.None:
+            case HandState.None:
                 {
                     node.SetGlow(Colors.Transparent);
                     node.ClearAllInteract();
                     break;
                 }
-            case PlaygoundState.Use:
+            case HandState.Play:
                 {
                     bool canPlay = card.GetPlayer().resource.Test(card.cost);
                     GD.Print("canPlay: " + canPlay);
@@ -106,7 +108,7 @@ public partial class BoardRenderManager
                     
                     break;
                 }
-            case PlaygoundState.Select:
+            case HandState.Select:
                 {
                     break;
 

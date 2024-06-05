@@ -34,7 +34,7 @@ public partial class Player
 
     public async Task OnGameStart()
     {
-        await Actions.DrawCard(7);
+        await Actions.DrawCard(4);
     }
 
     public async Task OnTurnStart()

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 public static class HandRenderManager
 {
-    private static Node2D HandAnchor;
+    private static Control HandAnchor;
     private static HandState handState = HandState.Play;
 
     public static void Init()
     {
-        HandAnchor = GameNode.Instance.GetNode<Node2D>("%HandAnchor");
+        HandAnchor = GameNode.Instance.GetNode<Control>("%HandAnchor");
     }
 
 

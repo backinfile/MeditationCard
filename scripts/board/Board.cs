@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 public class Board
 {
-    public BoardState State { get; set; } = BoardState.None;
+    public BoardState State { get; private set; } = BoardState.None;
     public Player Player { get; } = new Player();
 
     public readonly List<Card> playgound = new List<Card>();
+
+    public int Turn = 0;
 
     public async Task Update()
     {
@@ -42,6 +44,9 @@ public class Board
             case BoardState.TurnStart:
                 {
                     GD.Print("State = TurnStart");
+                    Turn++;
+                    GameNode.Instance.GetNode<Label>("%GameTurnInfo").Text = $"现在是第{Turn}回合";
+
                     await Player.OnTurnStart();
                     await ChangeStageTo(BoardState.Turn);
                     break;
@@ -49,12 +54,14 @@ public class Board
             case BoardState.Turn:
                 {
                     GD.Print("State = Turn");
-                    await ChangeStageTo(BoardState.TurnEnd);
+                    await Actions.SetPlayState(HandState.Play);
+                    //await ChangeStageTo(BoardState.TurnEnd);
                     break;
                 }
             case BoardState.TurnEnd:
                 {
                     GD.Print("State = TurnEnd");
+                    await Actions.SetPlayState(HandState.None);
                     await ChangeStageTo(BoardState.Clear);
                     break;
                 }

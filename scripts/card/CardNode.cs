@@ -10,6 +10,7 @@ public partial class CardNode : Control
     [Export]
     public int CostElementGap = 0;
 
+    private TextureRect CardFocus;
 
 
 
@@ -24,23 +25,27 @@ public partial class CardNode : Control
     private Action _onDragCancel;
     private bool _draggable = false;
     private bool _dragging = false;
+    private Card card;
+    private const bool CLICK_DRAG_INFO_OPEN = false;
 
 
     public static CardNode CreateNode()
     {
         CardNode node = element_object.Instantiate<CardNode>();
+        node.CardFocus = node.GetNode<Control>("Control").GetNode<TextureRect>("CardFocus");
         return node;
     }
 
     public void Init(Card card)
     {
+        this.card = card;
         var control = GetNode<Control>("Control");
         control.GetNode<Label>("Name").Text = card.Name;
 
         {
             var costNode = control.GetNode("Cost");
             int curPositionY = 0;
-            foreach(ResourceType type in Utils.GetAllResType())
+            foreach (ResourceType type in Utils.GetAllResType())
             {
                 if (card.cost.Has(type))
                 {
@@ -49,7 +54,7 @@ public partial class CardNode : Control
                     {
                         Texture = type.GetTexture(),
                         Position = new Vector2(0, curPositionY),
-                        Scale =  new Vector2(CostElementSize, CostElementSize) / type.GetTexture().GetSize()
+                        Scale = new Vector2(CostElementSize, CostElementSize) / type.GetTexture().GetSize()
                     };
                     Label label = new Label
                     {
@@ -85,26 +90,35 @@ public partial class CardNode : Control
                 if (e.Pressed)
                 {
                     mouseDownTimer = 0f;
-                } else
+                    if (CLICK_DRAG_INFO_OPEN) GD.Print("mouseDownTimer start");
+                }
+                else
                 {
                     if (_dragging)
                     {
                         _dragging = false;
                         _OnDrag?.Invoke(false);
-                    } else if (mouseDownTimer >= 0 && mouseDownTimer <= TIME_TO_START_DRAG)
+                        if (CLICK_DRAG_INFO_OPEN) GD.Print("_OnDrag false");
+                    }
+                    else if (mouseDownTimer >= 0 && mouseDownTimer <= TIME_TO_START_DRAG)
                     {
                         _OnClick?.Invoke();
+                        if (CLICK_DRAG_INFO_OPEN) GD.Print("_OnClick");
                     }
                     mouseDownTimer = -1f;
+                    if (CLICK_DRAG_INFO_OPEN) GD.Print("mouseDownTimer = -1");
                 }
-            } else if (ev is InputEventMouseMotion)
+            }
+            else if (ev is InputEventMouseMotion)
             {
                 if (_draggable && mouseDownTimer >= 0 && !_dragging)
                 {
                     _dragging = true;
                     _OnDrag?.Invoke(true);
+                    if (CLICK_DRAG_INFO_OPEN) GD.Print("_OnDrag true by motion");
                 }
-            } if (ev is InputEventMouseButton e1 && e1.ButtonIndex == MouseButton.Right)
+            }
+            if (ev is InputEventMouseButton e1 && e1.ButtonIndex == MouseButton.Right)
             {
                 if (e1.Pressed) _OnRightClick?.Invoke();
             }
@@ -114,10 +128,12 @@ public partial class CardNode : Control
 
         { // for test
             _draggable = true;
-            _OnClick = () => {
+            _OnClick = () =>
+            {
                 GD.Print("OnClick");
             };
-            _OnDrag = (v) => {
+            _OnDrag = (v) =>
+            {
                 GD.Print("_OnDrag " + v);
                 if (v)
                 {
@@ -130,7 +146,8 @@ public partial class CardNode : Control
                     tween.Parallel().TweenProperty(this, "scale", new Vector2(1f, 1f), 0.1f);
                 }
             };
-            _OnMouseEnter = (v) => {
+            _OnMouseEnter = (v) =>
+            {
                 GD.Print("_OnMouseEnter " + v);
                 //var target = v ? 1.5f : 1f;
                 //Tween tween = this.CreateTween();
@@ -138,6 +155,8 @@ public partial class CardNode : Control
                 //tween.Parallel().TweenProperty(this, "position", new Vector2(target, target), 0.2f);
             };
         }
+
+        ClearAllInteract();
     }
 
 
@@ -150,7 +169,7 @@ public partial class CardNode : Control
     public void ClearAllInteract()
     {
         SetOnClick(null);
-        SetOnRightClick(null);
+        SetOnRightClick(() => BigCardScreenManager.Show(card));
         SetOnMouseHover(null);
         SetOnDrag(false, null, null);
     }
@@ -175,12 +194,24 @@ public partial class CardNode : Control
         if (_dragging && !draggable)
         {
             _dragging = false;
+            mouseDownTimer = -1f;
             _onDragCancel?.Invoke();
+            if (CLICK_DRAG_INFO_OPEN) GD.Print("_onDragCancel");
         }
 
         _draggable = draggable;
         _OnDrag = onDrag;
         _onDragCancel = onDragCancel;
+    }
+
+    public void SetFocus(bool focus)
+    {
+        CardFocus.Visible = focus;
+    }
+
+    public void SetCostHide(bool hide = true)
+    {
+        GetNode<Control>("Control").GetNode<Control>("Cost").Visible = !hide;
     }
 
 
@@ -196,6 +227,7 @@ public partial class CardNode : Control
                 {
                     _dragging = true;
                     _OnDrag?.Invoke(true);
+                    if (CLICK_DRAG_INFO_OPEN) GD.Print("_OnDrag true by hold time");
                 }
             }
         }
@@ -205,5 +237,7 @@ public partial class CardNode : Control
             Vector2 position = GetViewport().GetMousePosition();
             this.Position = position;
         }
+
+        CardFocus.RotationDegrees += (float)(90 * delta);
     }
 }

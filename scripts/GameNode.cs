@@ -40,6 +40,7 @@ public partial class GameNode : Node
         }
         BoardRenderManager.Init();
         HandRenderManager.Init();
+        BigCardScreenManager.Init();
         GameManager.StartGame();
 
     }

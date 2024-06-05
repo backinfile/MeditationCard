@@ -22,9 +22,71 @@ ResImage_Soul = ExtResource("7_26sng")
 [node name="Board" type="Node2D" parent="."]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Board"]
+layer = 0
+
+[node name="PlaygoundAnchor" type="Control" parent="Board/CanvasLayer"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 547.0
+offset_top = 213.0
+offset_right = 547.0
+offset_bottom = 213.0
+
+[node name="HandAnchor" type="Control" parent="Board/CanvasLayer"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 582.0
+offset_top = 558.0
+offset_right = 582.0
+offset_bottom = 558.0
+
+[node name="ResourceAnchor" type="Control" parent="Board/CanvasLayer"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 8.0
+offset_top = 408.0
+offset_right = 8.0
+offset_bottom = 408.0
+
+[node name="ColorRect" type="ColorRect" parent="Board/CanvasLayer/ResourceAnchor"]
+offset_right = 102.0
+offset_bottom = 142.0
+color = Color(0.262745, 0.262745, 0.262745, 1)
+
+[node name="ButtonAnchor" type="Control" parent="Board/CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 782.0
+offset_top = 338.0
+offset_right = 822.0
+offset_bottom = 378.0
+
+[node name="CombatInfoAnchor" type="VBoxContainer" parent="Board/CanvasLayer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 50.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+
+[node name="GameGoal" type="Label" parent="Board/CanvasLayer/CombatInfoAnchor"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "目标：在第6回合前，魂质达到10点"
+horizontal_alignment = 1
+
+[node name="GameTurnInfo" type="Label" parent="Board/CanvasLayer/CombatInfoAnchor"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "现在是第1回合"
+horizontal_alignment = 1
+
+[node name="BigCardScreen" type="CanvasLayer" parent="."]
 visible = false
 
-[node name="Window" type="Control" parent="Board/CanvasLayer"]
+[node name="Control" type="Control" parent="BigCardScreen"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,48 +94,38 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Board/CanvasLayer/Window"]
+[node name="Mask" type="ColorRect" parent="BigCardScreen/Control"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0, 0, 0, 0.709804)
 
-[node name="InfoBar" type="HBoxContainer" parent="Board/CanvasLayer/Window/VBoxContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Board/CanvasLayer/Window/VBoxContainer/InfoBar"]
-layout_mode = 2
+[node name="CenterContainer" type="CenterContainer" parent="BigCardScreen/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 
-[node name="GoalInfo" type="Label" parent="Board/CanvasLayer/Window/VBoxContainer/InfoBar/VBoxContainer"]
-layout_mode = 2
-text = "要求：在第6回合开始前魂质达到10点"
-
-[node name="TurnInfo" type="Label" parent="Board/CanvasLayer/Window/VBoxContainer/InfoBar/VBoxContainer"]
-layout_mode = 2
-text = "当前是第1回合"
-
-[node name="GameBoard" type="Control" parent="Board/CanvasLayer/Window/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="BigCardScreen/Control/CenterContainer"]
 layout_mode = 2
 
-[node name="RelicBar" type="HBoxContainer" parent="Board/CanvasLayer/Window/VBoxContainer"]
+[node name="Name" type="Label" parent="BigCardScreen/Control/CenterContainer/VBoxContainer"]
 layout_mode = 2
+text = "card name"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="HandAnchor" type="Node2D" parent="Board"]
-unique_name_in_owner = true
-position = Vector2(582, 558)
+[node name="Cost" type="Label" parent="BigCardScreen/Control/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "cost: "
 
-[node name="ResourceAnchor" type="Node2D" parent="Board"]
-unique_name_in_owner = true
-position = Vector2(25, 402)
-
-[node name="ColorRect" type="ColorRect" parent="Board/ResourceAnchor"]
-offset_right = 102.0
-offset_bottom = 142.0
-color = Color(0.262745, 0.262745, 0.262745, 1)
-
-[node name="PlaygoundAnchor" type="Node2D" parent="Board"]
-unique_name_in_owner = true
-position = Vector2(550, 213)
+[node name="BigCardScrrenSkillDescription" type="Control" parent="BigCardScreen/Control/CenterContainer/VBoxContainer"]
+layout_mode = 2

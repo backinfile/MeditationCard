@@ -11,6 +11,16 @@ public partial class CardRenderManager
         return map.ContainsKey(card);
     }
 
+    // not create card node
+    public static CardNode GetNode(Card card)
+    {
+        if (map.TryGetValue(card, out var node))
+        {
+            return node;
+        }
+        return null;
+    }
+
     public static CardNode Show(Card card)
     {
         if (map.TryGetValue(card, out var node))

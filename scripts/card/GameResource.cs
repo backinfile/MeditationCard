@@ -153,6 +153,20 @@ public enum ResourceType
 
 public static class ResourceUtil
 {
+    public static string GetName(this ResourceType type)
+    {
+        return type switch
+        {
+            ResourceType.Enlight => "启",
+            ResourceType.Light => "光",
+            ResourceType.Shadow => "影",
+            ResourceType.Stone => "石",
+            ResourceType.Heart => "心",
+            ResourceType.AnyRes => "通用",
+            ResourceType.Soul => "魂质",
+            _ => "未知",
+        };
+    }
     public static Color GetColor(this ResourceType type)
     { 
         return type switch

@@ -8,6 +8,23 @@ public static class Actions
 {
     private static object waitResult = null;
 
+    public static async Task SetPlayState(HandState state)
+    {
+        await HandRenderManager.SetHandState(state);
+        await BoardRenderManager.SetPlaygoundState(state);
+    }
+
+    public static async Task EndTurn()
+    {
+        if (GetBoard().State == BoardState.Turn)
+        {
+            await GetBoard().ChangeStageTo(BoardState.TurnEnd);
+        } else
+        {
+            GD.PrintErr("End turn in state " + GetBoard().State);
+        }
+    }
+
     public static async Task AddResource(GameResource resource)
     {
         GameResource playerResource = GetPlayer().resource;
