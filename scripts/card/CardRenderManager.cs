@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public partial class CardRenderManager
 {
@@ -32,7 +33,7 @@ public partial class CardRenderManager
 
         CardNode cardNode = CardNode.CreateNode();
         cardNode.Init(card);
-        GameNode.Instance.AddChild(cardNode);
+        GameNode.Instance.AddCard(cardNode);
         map[card] = cardNode;
         return cardNode;
     }
@@ -46,5 +47,18 @@ public partial class CardRenderManager
             GameNode.Instance.RemoveCard(cardNode);
             map.Remove(card);
         }
+    }
+
+    public static async Task Flash(Card card)
+    {
+        CardNode node = GetNode(card);
+        if (node == null) return;
+
+        var curScale = node.Scale;
+        var expandScale = curScale * 1.2f;
+        Tween tween = node.CreateTween();
+        tween.TweenProperty(node, "scale", expandScale, Res.MOVE_INTERVAL / 2f);
+        tween.TweenProperty(node, "scale", curScale, Res.MOVE_INTERVAL / 2f);
+        await Actions.Wait(Res.MOVE_INTERVAL);
     }
 }

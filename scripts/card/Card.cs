@@ -17,6 +17,17 @@ public abstract class Card
     {
     }
 
+    public virtual bool CanPlay()
+    {
+        // 单位不可超过7个
+        if (Utils.GetBoard().playgound.Count >= Res.PlaygoundSize)
+        {
+            return false;
+        }
+
+        return Utils.GetPlayer().ConvertCardCost(this, out _);
+    }
+
     public virtual Card MakeCopy() // need to overwrite if contains complex constructor
     {
         return (Card)Activator.CreateInstance(this.GetType());
@@ -55,38 +66,29 @@ public abstract class Skill
     }
 
 
-    public virtual void OnTurnStart(Card card)
+    public async virtual Task OnTurnStart(Card card)
     {
+
+        await Actions.DoNothing();
+    }
+    public async virtual Task OnTurnStartAfter(Card card)
+    {
+        await Actions.DoNothing();
 
     }
-    public virtual void OnTurnStartAfter(Card card)
+    public async virtual Task OnTurnEnd(Card card)
     {
 
+        await Actions.DoNothing();
     }
-    public virtual void OnTurnEnd(Card card)
+    public async virtual Task OnTurnEndAfter(Card card)
     {
 
-    }
-    public virtual void OnTurnEndAfter(Card card)
-    {
-
+        await Actions.DoNothing();
     }
 
     public virtual void OnTrigger(Card card, Card target)
     {
 
-    }
-}
-
-public class HarvestSkill : Skill
-{
-    public GameResource resource;
-
-    public HarvestSkill(GameResource resource)
-    {
-        this.activeSkills = false;
-        this.tapCost = false;
-        this.resource = resource;
-        this.description = "Harvert: " + resource.ToString();
     }
 }

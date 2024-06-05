@@ -41,4 +41,94 @@ public partial class Player
     {
         await Actions.DrawCard(1);
     }
+
+    public async Task OnTurnEnd()
+    {
+        foreach (var card in Utils.GetBoard().playgound)
+        {
+            foreach(var skill in card.skills)
+            {
+                await skill.OnTurnEnd(card);
+            }
+        }
+        foreach (var card in Utils.GetBoard().playgound)
+        {
+            foreach (var skill in card.skills)
+            {
+                await skill.OnTurnEndAfter(card);
+            }
+        }
+    }
+
+    public bool CanFitCardCost(Card card)
+    {
+        return ConvertCardCost(card, out _);
+    }
+
+    public bool ConvertCardCost(Card card, out GameResource converted)
+    {
+        converted = new GameResource();
+        GameResource cost = card.cost.MakeCopy();
+        // TODO: may have some reduce resource effect
+
+        var own = resource.MakeCopy();
+
+        // fit need for each type
+        foreach (var type in Utils.GetAllResType())
+        {
+            if (type == ResourceType.AnyRes) continue;
+            int need = cost.Get(type);
+            int has = own.Get(type);
+            int provide = Math.Min(has, need);
+            if (provide > 0)
+            {
+                converted.Add(type, provide);
+                own.Add(type, -provide);
+                cost.Add(type, -provide);
+            }
+        }
+        // use enlight to fit each type
+        {
+            int leftEnlight = own.Get(ResourceType.Enlight);
+            foreach (var type in Utils.GetAllResType()) // 启可以用来代替光影石心
+            {
+                if (type == ResourceType.AnyRes || type == ResourceType.Enlight || type == ResourceType.Soul) continue;
+                int need = cost.Get(type);
+                int provide = Math.Min(need, leftEnlight);
+                if (provide > 0)
+                {
+                    converted.Add(ResourceType.Enlight, provide);
+                    leftEnlight -= provide;
+                    own.Add(ResourceType.Enlight, -provide);
+                    cost.Add(type, -provide);
+                }
+            }
+        }
+
+        // fit any type
+        {
+            int needAny = cost.Get(ResourceType.AnyRes);// 需求通用元素，可以用启光影石心
+            foreach (var type in new ResourceType[]{ 
+                ResourceType.Stone, ResourceType.Heart, ResourceType.Shadow, ResourceType.Light, ResourceType.Enlight
+            }) 
+            {
+                int has = own.Get(type);
+                int provide = Math.Min(has, needAny);
+                if (provide > 0)
+                {
+                    converted.Add(type, provide);
+                    needAny -= provide;
+                    own.Add(type, -provide);
+                    cost.Add(ResourceType.AnyRes, -provide);
+                }
+            }
+        }
+
+        // 还剩下了元素没有满足
+        if (cost.Total() > 0)
+        {
+            return false;
+        }
+        return true;
+    }
 }

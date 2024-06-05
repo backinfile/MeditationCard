@@ -20,8 +20,8 @@ public static class Res
     public const float SCALE_PLAYGROUNG = 0.6f;
 
 
-    public const int ZIndex_Mask = 2000;
-    public const int ZIndex_Drag = 200;
-    public const int ZIndex_Hand = 100;
-    public const int ZIndex_Board = 0;
+    public const int ZIndex_Mask = 100;
+    public const int ZIndex_Drag = -100;
+    public const int ZIndex_Hand = -200;
+    public const int ZIndex_Board = -300;
 }

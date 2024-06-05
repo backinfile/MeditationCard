@@ -42,6 +42,13 @@ offset_top = 558.0
 offset_right = 582.0
 offset_bottom = 558.0
 
+[node name="CardNodeLayer" type="Control" parent="Board/CanvasLayer"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [node name="ResourceAnchor" type="Control" parent="Board/CanvasLayer"]
 unique_name_in_owner = true
 layout_mode = 3
@@ -56,13 +63,16 @@ offset_right = 102.0
 offset_bottom = 142.0
 color = Color(0.262745, 0.262745, 0.262745, 1)
 
-[node name="ButtonAnchor" type="Control" parent="Board/CanvasLayer"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 782.0
-offset_top = 338.0
-offset_right = 822.0
-offset_bottom = 378.0
+[node name="ButtonAnchor" type="VBoxContainer" parent="Board/CanvasLayer"]
+offset_left = 1021.0
+offset_top = 472.0
+offset_right = 1021.0
+offset_bottom = 472.0
+
+[node name="TurnEndButton" type="Button" parent="Board/CanvasLayer/ButtonAnchor"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "回合结束"
 
 [node name="CombatInfoAnchor" type="VBoxContainer" parent="Board/CanvasLayer"]
 anchors_preset = 10

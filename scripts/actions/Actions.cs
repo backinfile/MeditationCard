@@ -10,6 +10,8 @@ public static class Actions
 
     public static async Task SetPlayState(HandState state)
     {
+        BoardRenderManager.SetTurnEndBtn(state == HandState.Play);
+
         await HandRenderManager.SetHandState(state);
         await BoardRenderManager.SetPlaygoundState(state);
     }
@@ -19,33 +21,29 @@ public static class Actions
         if (GetBoard().State == BoardState.Turn)
         {
             await GetBoard().ChangeStageTo(BoardState.TurnEnd);
-        } else
+        }
+        else
         {
             GD.PrintErr("End turn in state " + GetBoard().State);
         }
     }
 
-    public static async Task AddResource(GameResource resource)
+    public static async Task AddResource(GameResource resource, bool remove = false, bool animation = true)
     {
+        if (remove)
+        {
+            resource = resource.MakeCopy();
+            resource.Inverse();
+        }
+
         GameResource playerResource = GetPlayer().resource;
-        foreach (var type in Utils.GetAllResType())
+        if (animation)
         {
-            int curResource = playerResource.Get(type);
-            if (resource.Has(type))
-            {
-                int cnt = resource.Get(type);
-                BoardRenderManager.SetResourceCnt(type, curResource + (cnt > 0 ? "+" : "") + cnt);
-            }
+            BoardRenderManager.AddResourcePreview(resource);
+            await Wait(0.3f);
         }
-        await Wait(0.3f);
-
         playerResource.Add(resource);
-
-        foreach (var type in Utils.GetAllResType())
-        {
-            int curResource = playerResource.Get(type);
-            BoardRenderManager.SetResourceCnt(type, curResource.ToString());
-        }
+        BoardRenderManager.ResetPlayerResourceView();
     }
     public static async Task AddResource(ResourceType resourceType, int cnt)
     {
@@ -67,9 +65,8 @@ public static class Actions
     public static async Task PlayCard(Card card)
     {
         GD.Print("playerCard");
-        var cost = card.cost.MakeCopy();
-        cost.Inverse();
-        await AddResource(cost);
+        GetPlayer().ConvertCardCost(card, out var converted);
+        await AddResource(converted, true, false);
 
         GetPlayer().handPile.Remove(card);
         GetBoard().playgound.Add(card);

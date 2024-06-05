@@ -7,6 +7,22 @@ public partial class GameResource
 {
     private readonly Dictionary<ResourceType, int> dict = new();
 
+    public GameResource()
+    {
+    }
+    public GameResource(ResourceType type, int cnt)
+    {
+        dict.Add(type, cnt);
+    }
+    public GameResource(params object[] res)
+    {
+        for (int i = 0; i < res.Length / 2; i++)
+        {
+            dict.Add((ResourceType)res[i], (int)res[i * 2 + 1]);
+        }
+    }
+
+
     public int Get(ResourceType type)
     {
         if (dict.TryGetValue(type, out var i)) return i;
@@ -84,12 +100,12 @@ public partial class GameResource
 
     public void Inverse()
     {
-        foreach(var type in Utils.GetAllResType())
+        foreach (var type in Utils.GetAllResType())
         {
             int cnt = Get(type);
             if (cnt != 0)
             {
-                dict[type] = - cnt;
+                dict[type] = -cnt;
             }
         }
     }
@@ -130,8 +146,8 @@ public partial class GameResource
             int num = Get(type);
             if (num > 0)
             {
-                if (res == "") res = num + " " + type.ToString();
-                else res += ", " + num + " " + type.ToString();
+                if (res == "") res = num + " " + type.GetName();
+                else res += ", " + num + " " + type.GetName();
             }
         }
         if (res == "") return "0";
@@ -168,7 +184,7 @@ public static class ResourceUtil
         };
     }
     public static Color GetColor(this ResourceType type)
-    { 
+    {
         return type switch
         {
             ResourceType.Enlight => new Color(0.129f, 0.365f, 1),

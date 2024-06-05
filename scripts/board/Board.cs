@@ -45,8 +45,8 @@ public class Board
                 {
                     GD.Print("State = TurnStart");
                     Turn++;
-                    GameNode.Instance.GetNode<Label>("%GameTurnInfo").Text = $"现在是第{Turn}回合";
 
+                    BoardRenderManager.SetTurnInfo(Turn);
                     await Player.OnTurnStart();
                     await ChangeStageTo(BoardState.Turn);
                     break;
@@ -62,7 +62,8 @@ public class Board
                 {
                     GD.Print("State = TurnEnd");
                     await Actions.SetPlayState(HandState.None);
-                    await ChangeStageTo(BoardState.Clear);
+                    await Player.OnTurnEnd();
+                    await ChangeStageTo(BoardState.TurnStart);
                     break;
                 }
             case BoardState.Clear:

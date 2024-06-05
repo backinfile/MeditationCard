@@ -1,11 +1,13 @@
 using Godot;
-using Godot.Collections;
 using System;
 using System.Threading.Tasks;
 
 public partial class BoardRenderManager
 {
     private static Control PlaygoundAnchor;
+    private static Button TurnEndButton;
+    private static Label GameTurnInfo;
+
     public static Action<ResourceType, string> SetResourceCnt;
 
     private static HandState playgoundState = HandState.None;
@@ -15,51 +17,97 @@ public partial class BoardRenderManager
     {
         PlaygoundAnchor = GameNode.Instance.GetNode<Control>("%PlaygoundAnchor");
 
-        Dictionary<ResourceType, Label> CntMap = new Dictionary<ResourceType, Label>();
-
-        Node ResourceAnchor = GameNode.Instance.GetNode("%ResourceAnchor");
-        int curPositionX = 0;
-        int curPositionY = 0;
-        int resourceIconSize = GameNode.Instance.ResourceIconSize;
-        int resourceIconGap = GameNode.Instance.ResourceIconGap;
-        foreach (var type in Utils.GetAllResType())
+        // 资源图标
         {
-            if (type == ResourceType.AnyRes)
+            var CntMap = new System.Collections.Generic.Dictionary<ResourceType, Label>();
+
+            Node ResourceAnchor = GameNode.Instance.GetNode("%ResourceAnchor");
+            int curPositionX = 0;
+            int curPositionY = 0;
+            int resourceIconSize = GameNode.Instance.ResourceIconSize;
+            int resourceIconGap = GameNode.Instance.ResourceIconGap;
+            foreach (var type in Utils.GetAllResType())
             {
-                continue;
+                if (type == ResourceType.AnyRes)
+                {
+                    continue;
+                }
+
+                int cnt = 0;
+                TextureRect rect = new TextureRect
+                {
+                    Texture = type.GetTexture(),
+                    Position = new Vector2(curPositionX, curPositionY),
+                    Scale = new Vector2(resourceIconSize, resourceIconSize) / type.GetTexture().GetSize()
+                };
+                Label label = new Label
+                {
+                    Text = cnt.ToString(),
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Size = new Vector2(resourceIconSize, resourceIconSize),
+                    Position = new Vector2(resourceIconSize, curPositionY),
+                    PivotOffset = new Vector2(resourceIconSize / 2f, resourceIconSize / 2f),
+                    //Scale = new Vector2(resourceIconSize / 40f, resourceIconSize / 40f)
+                };
+
+                curPositionY += resourceIconSize + resourceIconGap;
+                ResourceAnchor.AddChild(rect);
+                ResourceAnchor.AddChild(label);
+                CntMap[type] = label;
             }
-
-            int cnt = 0;
-            TextureRect rect = new TextureRect
+            ResourceAnchor.GetNode<ColorRect>("ColorRect").Size = new Vector2(resourceIconSize * 2, resourceIconSize * 6 + resourceIconGap * 5);
+            SetResourceCnt = (type, cnt) =>
             {
-                Texture = type.GetTexture(),
-                Position = new Vector2(curPositionX, curPositionY),
-                Scale = new Vector2(resourceIconSize, resourceIconSize) / type.GetTexture().GetSize()
+                if (CntMap.ContainsKey(type))
+                {
+                    CntMap[type].Text = cnt.ToString();
+                }
             };
-            Label label = new Label
-            {
-                Text = cnt.ToString(),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center,
-                Size = new Vector2(resourceIconSize, resourceIconSize),
-                Position = new Vector2(resourceIconSize, curPositionY),
-                PivotOffset = new Vector2(resourceIconSize / 2f, resourceIconSize / 2f),
-                //Scale = new Vector2(resourceIconSize / 40f, resourceIconSize / 40f)
-            };
-
-            curPositionY += resourceIconSize + resourceIconGap;
-            ResourceAnchor.AddChild(rect);
-            ResourceAnchor.AddChild(label);
-            CntMap[type] = label;
         }
-        ResourceAnchor.GetNode<ColorRect>("ColorRect").Size = new Vector2(resourceIconSize * 2, resourceIconSize * 6 + resourceIconGap * 5);
-        SetResourceCnt = (type, cnt) =>
+
+
+        // 回合结束按钮
         {
-            if (CntMap.ContainsKey(type))
+            TurnEndButton = GameNode.Instance.GetNode<Button>("%TurnEndButton");
+            TurnEndButton.Pressed += async () => {
+                ResetPlayerResourceView();
+                await Actions.EndTurn(); 
+            };
+            TurnEndButton.MouseEntered += () =>
             {
-                CntMap[type].Text = cnt.ToString();
-            }
-        };
+                GameResource resource = new GameResource();
+                foreach(var card in Utils.GetBoard().playgound)
+                {
+                    foreach(var skill in card.skills)
+                    {
+                        if (skill is PrecipitationSkill s)
+                        {
+                            resource.Add(s.resource);
+                        }
+                    }
+                }
+                AddResourcePreview(resource);
+            };
+            TurnEndButton.MouseExited += () =>
+            {
+                ResetPlayerResourceView();
+            };
+        }
+
+        {
+            GameTurnInfo = GameNode.Instance.GetNode<Label>("%GameTurnInfo");
+        }
+    }
+
+    public static void SetTurnEndBtn(bool canTurnEnd)
+    {
+        TurnEndButton.Disabled = !canTurnEnd;
+    }
+
+    public static void SetTurnInfo(int turn)
+    {
+        GameTurnInfo.Text = $"现在是第{turn}回合";
     }
 
     public static async Task SetPlaygoundState(HandState state)
@@ -102,10 +150,11 @@ public partial class BoardRenderManager
                 }
             case HandState.Play:
                 {
-                    bool canPlay = card.GetPlayer().resource.Test(card.cost);
-                    GD.Print("canPlay: " + canPlay);
-                    node.SetGlow(canPlay ? Colors.Blue : Colors.Transparent);
-                    
+                    node.SetGlow(Colors.Transparent);
+                    node.ClearAllInteract();
+                    //bool canPlay = card.CanPlay();
+                    //GD.Print("canPlay: " + canPlay);
+                    //node.SetGlow(canPlay ? Colors.Blue : Colors.Transparent);
                     break;
                 }
             case HandState.Select:
@@ -129,6 +178,34 @@ public partial class BoardRenderManager
         float curY = centerY;
         return new Vector2(curX, curY);
 
+    }
+
+    public static void AddResourcePreview(GameResource resource, bool remove = false)
+    {
+        if (remove)
+        {
+            resource = resource.MakeCopy();
+            resource.Inverse();
+        }
+        GameResource playerResource = Utils.GetPlayer().resource;
+        foreach (var type in Utils.GetAllResType())
+        {
+            int curResource = playerResource.Get(type);
+            if (resource.Has(type))
+            {
+                int cnt = resource.Get(type);
+                BoardRenderManager.SetResourceCnt(type, curResource + (cnt > 0 ? "+" : "") + cnt);
+            }
+        }
+    }
+    public static void ResetPlayerResourceView()
+    {
+        GameResource playerResource = Utils.GetPlayer().resource;
+        foreach (var type in Utils.GetAllResType())
+        {
+            int curResource = playerResource.Get(type);
+            BoardRenderManager.SetResourceCnt(type, curResource.ToString());
+        }
     }
 }
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 public partial class GameNode : Node
 {
     public static GameNode Instance { get; private set; }
+    private Control CardNodeLayer;
 
     [Signal]
     public delegate void BoardUpdateEventHandler();
@@ -34,6 +35,8 @@ public partial class GameNode : Node
     public override void _Ready()
     {
         Instance = this;
+        CardNodeLayer = GetNode<Control>("%CardNodeLayer");
+
         if (OS.GetName() == "Windows")
         {
             //DisplayServer.WindowSetSize(new Vector2I(480, 800));
@@ -103,11 +106,11 @@ public partial class GameNode : Node
 
     public void AddCard(Control node)
     {
-        AddChild(node);
+        CardNodeLayer.AddChild(node);
     }
     public void RemoveCard(Control node)
     {
-        RemoveChild(node);
+        CardNodeLayer.RemoveChild(node);
         node.QueueFree();
     }
 }
